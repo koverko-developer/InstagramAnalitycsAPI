@@ -18,8 +18,10 @@ auth.route('/')
     })
 
 function getUserInfo(req, res) {
+  var token = 'req.body.access_token';
+  if(req.body.access_token != 'undefined') token = req.body.access_token;
     console.log(req.body.access_token);
-    request('https://api.instagram.com/v1/users/self/?access_token='+req.body.access_token, function (error, response, body) {
+    request('https://api.instagram.com/v1/users/self/?access_token='+token, function (error, response, body) {
         console.log('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         //console.log('body:', body); // Print the HTML for the Google homepage.
