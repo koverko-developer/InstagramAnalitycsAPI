@@ -18,8 +18,8 @@ auth.route('/')
     })
 
 function getUserInfo(req, res) {
-  var token = 'req.body.access_token';
-  if(req.body.access_token != 'undefined') token = req.body.access_token;
+  var token = req.body.access_token;
+  if(req.body.access_token) token = '123456';
     console.log(req.body.access_token);
     request('https://api.instagram.com/v1/users/self/?access_token='+token, function (error, response, body) {
         console.log('error:', error); // Print the error if one occurred
