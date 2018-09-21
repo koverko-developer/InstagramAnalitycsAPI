@@ -1,8 +1,21 @@
 var express = require('express');
 var request = require('request');
+var _ = require('lodash');
+var Promise = require('bluebird');
+var fs = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var Client = require('instagram-private-api').V1;
 var device = new Client.Device('koverko_dev');
+
+var userName ='koverko_dev';
+var dir = __dirname + "/cookies/"+userName+".json";
+dir = dir.replace('user', 'auth');
+var device = new Client.Device('koverko_dev1');
+var storage = new Client.CookieFileStorage(dir);
+var session = new Client.Session(device, storage)
+var accountId = '5972326347'
+//var feed = new Client.Feed.UserMedia(session, accountId);
+var feed = new Client.Feed.UserMedia(session, accountId);
 
 var bodyParser = require('body-parser');
 var firebase = require('firebase');
@@ -20,6 +33,8 @@ user.use(bodyParser.json());
 
 user.route('/info/')
     .get((req, res) => {
+
+        getCookie(res);
 
     })
     .post((req, res) => {
@@ -152,7 +167,7 @@ async function getCounts(res, list, req, access_token) {
   }
   // console.log('col_p='+col_promise);
   // console.log('res send');
-  res.send(userInfo);
+     res.send(userInfo);
 }
 function checkPromise(res, col_promise, col_promise_true) {
 
@@ -205,6 +220,57 @@ async function getVideoViewCount(userName, media_id) {
   //         return new Media(session, json.items[0])
   //     })
   console.log(userName);
+
+}
+
+function getCookie(res) {
+  console.log(dir);
+    var readStream = fs.createReadStream(dir);
+    readStream
+    .on('data', function (chunk) {
+      d = chunk;
+      console.log(d);
+      setCookie(d, res)
+    })
+    .on('end', function () {
+        console.log('All the data in the file has been read');
+        readStream.destroy();
+    })
+    .on('close', function (err) {
+      console.log('Stream has been destroyed and file has been closed');
+    });
+}
+function setCookie(data, res) {
+
+  var start = new Date();
+  var count_like = 0;
+    Promise.mapSeries(_.range(1), function() {
+    return feed.get();
+    })
+    .then(function(results) {
+    // result should be Media[][]
+    var media = _.flatten(results);
+
+    for(var k in media){
+      console.log(k +"----like---"+ media[k]['_params']['likeCount']);
+      //console.log(media[k]['_params']['likeCount']);
+      count_like += media[k]['_params']['likeCount'];
+    }
+    var end = new Date();
+    console.log('Цикл занял '+(end - start)+' ms');
+    res.send('Цикл занял '+(end - start)+' ms');
+    var urls = _.map(media, function(medium) {
+    return _.last(medium)
+    });
+    //console.log(results);
+      fs.writeFile(dir, data , function(err) {
+        if(err) {
+        }else {
+        console.log(count_like);
+
+        }
+      });
+    })
 
 }
 
