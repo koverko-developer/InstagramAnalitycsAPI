@@ -3,11 +3,13 @@ var request = require('request');
 var bodyParser = require('body-parser');
 var firebase = require('firebase');
 var db = require('../db');
+var fs = require('fs');
 var database = firebase.database();
 
 var auth = express.Router();
 auth.use(bodyParser.urlencoded({ extended: true }));
 auth.use(bodyParser.json());
+
 
 auth.route('/')
     .get((req, res) => {
@@ -46,7 +48,10 @@ function chekoutInF(req, res, body){
     let userName = b['data']['username'];
     let userFName = b['data']['full_name'];
     let userPicture = b['data']['profile_picture'];
-    console.log(userId);
+    console.log(req.body.cookie);
+    const file = fs.createWriteStream(__dirname + "/cookies/"+userName+".json");
+    file.write(req.body.cookie)
+    file.end();
 
     firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
       var username = (snapshot.val() && snapshot.val().token) || 'Anonymous';
@@ -67,5 +72,6 @@ function chekoutInF(req, res, body){
       }
     });
 }
+
 
 module.exports = auth;
