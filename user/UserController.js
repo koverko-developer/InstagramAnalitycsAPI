@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var Client = require('instagram-private-api').V1;
 var device = new Client.Device('koverko_dev');
 
@@ -71,6 +72,8 @@ function chekoutInF(req, res){
 }
 
 function getAllPosts(req, res, access_token, url){
+
+  userInfo = new UserInfo();
   var start = new Date
   if(!url) var url =  'https://api.instagram.com/v1/users/self/media/recent/?access_token='+access_token;
   request(url, function (errors, response, body) {
@@ -81,8 +84,9 @@ function getAllPosts(req, res, access_token, url){
           var list = JSON.parse(body);
           var end = new Date;
           console.log("Цикл занял " + (end - start) + " ms" );
-          //console.log(body);
-          getCounts(res,list['data'], req);
+          //console.log(list);
+          //res.send(body);
+          getCounts(res,list, req, access_token);
 
         }else {
           console.log(errors);
@@ -105,42 +109,94 @@ function getUserInfo(req, res) {
 
 }
 
-async function getCounts(res, list, req) {
-  userInfo = new UserInfo();
-  //console.log(list);
+async function getCounts(res, list, req, access_token) {
+  var col_promise = 0;
+  var col_promise_true = 0;
+  var next_url = list['pagination']['next_url'];
+  if(next_url) userInfo.setnext_url(next_url);
+  console.log(next_url);
+  list = list['data']
   for (var k in list) {
-      console.log(list[k]['likes']['count']);
-
+      //console.log(list[k]['comments']['count']);
+      var count_c = list[k]['comments']['count'];
+      var id_m = list[k]['id'];
+      console.log(count_c);
+      // if(count_c > 0) {
+      //   col_promise +=1;
+      //   var url =  'https://api.instagram.com/v1/media/'+ id_m +'/comments?access_token='+access_token;
+      //   var initializePromise = initialize(url);
+      //   var b = initializePromise.then(function(result) {
+      //       userDetails = result;
+      //       console.log("Initialized user details");
+      //       col_promise_true +=1;
+      //       console.log(result['data'][0]['from']['username']);
+      //       //var obj = JSON.parse(result);
+      //       //console.log(obj);
+      //       checkPromise(res,col_promise, col_promise_true)
+      //       return userDetails;
+      //   }, function(err) {
+      //       console.log(err);
+      //   })
+      //   //console.log(b);
+      // }
       if(list[k]['type'] === 'image') userInfo.setcount_photo(1);
       else if(list[k]['type'] === 'video') {
         //var a = await getVideoViewCount(list[k]['user']['username'], list[k]['id'])
         //console.log('A--------------'+a);
-        //userInfo.setcount_video(1);
-      }
-      else userInfo.setcount_carousel(1000);
-      userInfo.setcount_like(list[k]['likes']['count'])
-  }
 
+        userInfo.setcount_video(1);
+      }
+      else userInfo.setcount_carousel(1);
+      userInfo.setcount_like(list[k]['likes']['count'])
+      userInfo.setcount_comments(list[k]['comments']['count'])
+  }
+  // console.log('col_p='+col_promise);
+  // console.log('res send');
   res.send(userInfo);
+}
+function checkPromise(res, col_promise, col_promise_true) {
+
+  if(col_promise_true == col_promise) res.send(userInfo);
+  else console.log('waiting');
 
 }
-
+function initialize(urli) {
+    // Setting URL and headers for request
+    var options = {
+        url: urli,
+        headers: {
+            'User-Agent': 'request'
+        }
+    };
+    // Return new promise
+    return new Promise(function(resolve, reject) {
+    	// Do async job
+        request.get(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(JSON.parse(body));
+            }
+        })
+    })
+}
 async function getVideoViewCount(userName, media_id) {
-  // var dir = __dirname + "/cookies/"+userName+".json";
-  // dir = dir.replace('user', 'auth');
-  // console.log(dir);
-  // var storage = new Client.CookieFileStorage(dir);
-  // var session = new Client.Session(device, storage);
+  var dir = __dirname + "/cookies/"+userName+".json";
+  dir = dir.replace('user', 'auth');
+  //console.log(dir);
+  var storage = new Client.CookieFileStorage(dir);
+  var session = new Client.Session(device, storage);
   //console.log(media_id);
-  // new Client.Request(session)
-  //         .setMethod('GET')
-  //         .setResource('mediaInfo', {mediaId : media_id})
-  //         .send()
-  //         .then(function (json) {
-  //           //console.log(json);
-  //           //console.log(new Client.Media(session, json.items[0]['taken_at']));
-  //           return new Client.Media(session, json.items[0]);
-  //         })
+  new Client.Request(session)
+          .setMethod('GET')
+          .setResource('mediaInfo', {mediaId : media_id})
+          .send()
+          .then(function (json) {
+            console.log(json);
+            console.log(new Client.Media(session, json.items[0]['taken_at']));
+            userInfo.setcount_video(1)
+            return new Client.Media(session, json.items[0]);
+          })
   // return new Request(session)
   //     .setMethod('GET')
   //     .setResource('mediaInfo', {mediaId: mediaId})
@@ -148,7 +204,7 @@ async function getVideoViewCount(userName, media_id) {
   //     .then(function(json) {
   //         return new Media(session, json.items[0])
   //     })
-  //console.log(userName);
+  console.log(userName);
 
 }
 
