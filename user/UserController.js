@@ -5,17 +5,9 @@ var Promise = require('bluebird');
 var fs = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var Client = require('instagram-private-api').V1;
-var device = new Client.Device('koverko_dev');
+//var device = new Client.Device('koverko_dev');
 
-var userName ='koverko_dev';
-var dir = __dirname + "/cookies/"+userName+".json";
-dir = dir.replace('user', 'auth');
-var device = new Client.Device('koverko_dev1');
-var storage = new Client.CookieFileStorage(dir);
-var session = new Client.Session(device, storage)
-var accountId = '5972326347'
-//var feed = new Client.Feed.UserMedia(session, accountId);
-var feed = new Client.Feed.UserMedia(session, accountId);
+
 
 var bodyParser = require('body-parser');
 var firebase = require('firebase');
@@ -39,6 +31,7 @@ user.route('/info/')
     })
     .post((req, res) => {
       getUserInfo(req, res);
+      //getCookie(req,res);
     })
 user.route('/:id/media/info')
     .get((req, res) => {
@@ -72,16 +65,20 @@ function getUserInfo(req, res) {
 function chekoutInF(req, res){
 
     let userId = req.params.id;
+
     console.log(userId);
     //console.log(error);
     firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
       var access_token = (snapshot.val() && snapshot.val().access_token) || 'Anonymous';
+      var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
       console.log(access_token);
+      console.log(username);
       if(access_token === 'Anonymous'){
           res.send(error);
       }else{
-          if(!req.body.url) getAllPosts(req,res, access_token);
-          else getAllPosts(req, res, access_token, req.body.url);
+          // if(!req.body.url) getAllPosts(req,res, access_token);
+          //else getAllPosts(req, res, access_token, req.body.url);
+          getCookie(req, res, username, userId);
       }
     });
 }
@@ -223,14 +220,22 @@ async function getVideoViewCount(userName, media_id) {
 
 }
 
-function getCookie(res) {
-  console.log(dir);
+function getCookie(req,res, username, accountId) {
+  var dir = __dirname + "/cookies/"+username+".json";
+  dir = dir.replace('user', 'auth');
+  var device = new Client.Device(username);
+  var storage = new Client.CookieFileStorage(dir);
+  var session = new Client.Session(device, storage)
+
+  var count = 1;
+  if(req.body.count_media) count = req.body.count_media;
+    console.log(count);
     var readStream = fs.createReadStream(dir);
     readStream
     .on('data', function (chunk) {
       d = chunk;
-      console.log(d);
-      setCookie(d, res)
+      //console.log(d);
+      setCookie(d, res, count, session, accountId, dir);
     })
     .on('end', function () {
         console.log('All the data in the file has been read');
@@ -240,25 +245,47 @@ function getCookie(res) {
       console.log('Stream has been destroyed and file has been closed');
     });
 }
-function setCookie(data, res) {
+function setCookie(data, res, count_m, session, accountId, dir) {
 
+  var feed = new Client.Feed.UserMedia(session, accountId);
+
+  console.log('count media = ' + count_m);
+  var m_userInfo = new UserInfo();
   var start = new Date();
   var count_like = 0;
-    Promise.mapSeries(_.range(1), function() {
-    return feed.get();
-    })
-    .then(function(results) {
-    // result should be Media[][]
-    var media = _.flatten(results);
+  var count_view = 0;
+  var count_comments = 0;
+  var count_photo = 0;
+  var count_video = 0;
+  var count_carousel = 0;
+      Promise.mapSeries(_.range(count_m), function() {
+       return feed.get();
+      })
+      .then(function(results) {
+      // result should be Media[][]
+      var media = _.flatten(results);
+      //console.log(media[2]);
+      for(var k in media){
+        //console.log(k +"----like---"+ media[k]['_params']['likeCount']+ '---comments----'+media[k]['_params']['commentCount']);
+        //console.log(k +"----view---"+ media[k]['_params']['viewCount']);
+        count_like += media[k]['_params']['likeCount'];
+        count_comments += media[k]['_params']['commentCount'];
+        if(media[k]['_params']['viewCount']) count_view += media[k]['_params']['viewCount'];
+        if(media[k]['_params']['mediaType'] === 2) count_video++;
+        else if(media[k]['_params']['mediaType'] === 1) count_photo++;
+        else if(media[k]['_params']['mediaType'] === 8) count_carousel++;
+      }
 
-    for(var k in media){
-      console.log(k +"----like---"+ media[k]['_params']['likeCount']);
-      //console.log(media[k]['_params']['likeCount']);
-      count_like += media[k]['_params']['likeCount'];
-    }
+    m_userInfo.setcount_carousel(count_carousel);
+    m_userInfo.setcount_photo(count_photo);
+    m_userInfo.setcount_video(count_video);
+    m_userInfo.setcount_view(count_view);
+    m_userInfo.setcount_comments(count_comments);
+    m_userInfo.setcount_like(count_like);
+
     var end = new Date();
     console.log('Цикл занял '+(end - start)+' ms');
-    res.send('Цикл занял '+(end - start)+' ms');
+    res.send(m_userInfo);
     var urls = _.map(media, function(medium) {
     return _.last(medium)
     });
@@ -266,8 +293,7 @@ function setCookie(data, res) {
       fs.writeFile(dir, data , function(err) {
         if(err) {
         }else {
-        console.log(count_like);
-
+         //console.log(count_like);
         }
       });
     })

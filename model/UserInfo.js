@@ -3,6 +3,7 @@ var method = UserInfo.prototype;
 function UserInfo() {
   this.count_like = 0;
   this.count_comments = 0;
+  this.count_view = 0;
   this.count_photo = 0;
   this.count_video = 0;
   this.count_carousel = 0;
@@ -13,6 +14,13 @@ method.setcount_comments  = function(_code) {
 }
 method.getcount_comments = function() {
   return this.count_comments;
+}
+
+method.setcount_view  = function(_code) {
+  this.count_view = this.count_view + _code;
+}
+method.getcount_view = function() {
+  return this.count_view;
 }
 
 method.setnext_url  = function(_code) {
