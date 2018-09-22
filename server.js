@@ -5,6 +5,7 @@ var firebase = require('firebase');
 var request = require('request');
 var AuthController = require('./auth/AuthController');
 var UserController = require('./user/UserController');
+var TopController = require('./top/TopController');
 
 var port = process.env.PORT || 80;
 
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // API routes
 app.use('/api/auth', AuthController);
 app.use('/users/', UserController);
+app.use('/top/', TopController);
 
 // Running the server
 app.listen(port, () => {

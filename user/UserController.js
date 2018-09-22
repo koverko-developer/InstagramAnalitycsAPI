@@ -264,9 +264,10 @@ function setCookie(data, res, count_m, session, accountId, dir) {
       .then(function(results) {
       // result should be Media[][]
       var media = _.flatten(results);
-      //console.log(media[2]);
+      console.log(media[1]);
       for(var k in media){
-        //console.log(k +"----like---"+ media[k]['_params']['likeCount']+ '---comments----'+media[k]['_params']['commentCount']);
+        console.log(media[k]['id']);
+        //console.log(k +"----like---"+ media[k]['_params']['topLikers']);
         //console.log(k +"----view---"+ media[k]['_params']['viewCount']);
         count_like += media[k]['_params']['likeCount'];
         count_comments += media[k]['_params']['commentCount'];
@@ -274,6 +275,17 @@ function setCookie(data, res, count_m, session, accountId, dir) {
         if(media[k]['_params']['mediaType'] === 2) count_video++;
         else if(media[k]['_params']['mediaType'] === 1) count_photo++;
         else if(media[k]['_params']['mediaType'] === 8) count_carousel++;
+
+        // const feed = new Client.Feed.MediaComments(session, media[k]['id']);
+        //
+      	// 	let originalCursor = feed.getCursor();
+      	// 	feed.get().then(function(comments) {
+      	// 		//console.log(comments);
+        //     _.each(comments, function(comment) {
+        //               console.log(comment);
+        //           })
+        //           //console.log('more available ' + feed.moreAvailable);
+        //       });
       }
 
     m_userInfo.setcount_carousel(count_carousel);
@@ -287,7 +299,7 @@ function setCookie(data, res, count_m, session, accountId, dir) {
     console.log('Цикл занял '+(end - start)+' ms');
     res.send(m_userInfo);
     var urls = _.map(media, function(medium) {
-    return _.last(medium)
+       return _.last(medium)
     });
     //console.log(results);
       fs.writeFile(dir, data , function(err) {
