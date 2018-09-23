@@ -6,6 +6,7 @@ var request = require('request');
 var AuthController = require('./auth/AuthController');
 var UserController = require('./user/UserController');
 var TopController = require('./top/TopController');
+var PostsController = require('./posts/PostsController');
 
 var port = process.env.PORT || 80;
 
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', AuthController);
 app.use('/users/', UserController);
 app.use('/top/', TopController);
+app.use('/posts/', PostsController);
 
 // Running the server
 app.listen(port, () => {

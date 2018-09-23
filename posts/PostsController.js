@@ -28,7 +28,7 @@ posts.route('/:id')
     .post((req, res) => {
       chekoutInF(req, res, 1);
     })
-posts.route('/:id/')
+posts.route('/:id/all')
     .get((req, res) => {
     })
     .post((req, res) => {
@@ -108,7 +108,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
 
         var d_ms = media[k]['_params']['takenAt'];
         var d = new Date(d_ms);
-        var s_date = date.format(d, 'YYYY-MM');
+        var s_date = date.format(d, 'YYYY-MM-DD');
         //console.log(s_date);
         if(datesAll.indexOf(s_date) === -1){
           datesAll[datesAll.length] = s_date;
@@ -138,7 +138,15 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
 
       }
 
+
+    m_userInfo.setcount_carousel(count_carousel);
+    m_userInfo.setcount_photo(count_photo);
+    m_userInfo.setcount_video(count_video);
+    m_userInfo.setcount_view(count_view);
+    m_userInfo.setcount_comments(count_comments);
+    m_userInfo.setcount_like(count_like);
     var userLikesArr = JSON.stringify ({
+      'userInfoMedia' : m_userInfo,
       'chartArr' : {
         'dates' : datesAll,
         'countsLikes' : datesCountLikeAll,
@@ -146,13 +154,6 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
         'countViews' : datesCountViewssAll
       }
     });
-    m_userInfo.setcount_carousel(count_carousel);
-    m_userInfo.setcount_photo(count_photo);
-    m_userInfo.setcount_video(count_video);
-    m_userInfo.setcount_view(count_view);
-    m_userInfo.setcount_comments(count_comments);
-    m_userInfo.setcount_like(count_like);
-
     console.log(JSON.parse(userLikesArr));
     //console.log(datesCountLikeAll);
     var end = new Date();
