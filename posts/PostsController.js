@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var firebase = require('firebase');
 var db = require('../db');
 var Error = require('../model/Error');
+var ChartsData = require('../model/ChartsData');
 var UserInfo = require('../model/UserInfo');
 var TopUser = require('../model/TopUser');
 var error = new Error();
@@ -87,6 +88,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
   var datesCountLikeAll = [];
   var datesCountCommentsAll = [];
   var datesCountViewssAll = [];
+  var typeMediaAll = [];
 
   console.log('count media = ' + count_m);
   var m_userInfo = new UserInfo();
@@ -116,6 +118,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
           datesCountCommentsAll[datesCountCommentsAll.length] = media[k]['_params']['commentCount'];
           if(media[k]['_params']['viewCount']) datesCountViewssAll[datesCountViewssAll.length] = media[k]['_params']['viewCount'];
           else datesCountViewssAll[datesCountViewssAll.length] = 0;
+          typeMediaAll[typeMediaAll.length] = media[k]['_params']['mediaType'];
         }
         else {
           datesCountLikeAll[datesAll.indexOf(s_date)] =
@@ -145,14 +148,20 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
     m_userInfo.setcount_view(count_view);
     m_userInfo.setcount_comments(count_comments);
     m_userInfo.setcount_like(count_like);
+
+    var charts = [];
+    for (var k in datesAll){
+
+      var dChard = new ChartsData(typeMediaAll[k], datesAll[k], datesCountLikeAll[k],
+                   datesCountCommentsAll[k], datesCountViewssAll[k]);
+      charts.push(dChard);
+
+    }
+
+
     var userLikesArr = JSON.stringify ({
       'userInfoMedia' : m_userInfo,
-      'chartArr' : {
-        'dates' : datesAll,
-        'countsLikes' : datesCountLikeAll,
-        'countComments' : datesCountCommentsAll,
-        'countViews' : datesCountViewssAll
-      }
+      'chartArr' : charts
     });
     console.log(JSON.parse(userLikesArr));
     //console.log(datesCountLikeAll);
