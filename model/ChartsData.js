@@ -1,11 +1,19 @@
 var method = ChartsData.prototype;
 
-function ChartsData(_mediaType, _dates, _countsLikes, _countComments, _countViews) {
+function ChartsData(_mediaType, _dates, _countsLikes, _countComments, _countViews, _takenAt) {
     this.mediaType = _mediaType;
     this.dates = _dates;
     this.countsLikes = _countsLikes;
     this.countComments = _countComments;
     this.countViews = _countViews;
+    this.takenAt = _takenAt;
+}
+
+method.settakenAt  = function(_code) {
+  this.takenAt = _code;
+}
+method.gettakenAt = function() {
+  return this.takenAt;
 }
 
 method.setmediaType  = function(_code) {

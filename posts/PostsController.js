@@ -89,7 +89,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
   var datesCountCommentsAll = [];
   var datesCountViewssAll = [];
   var typeMediaAll = [];
-
+  var takenAtAll = []
   console.log('count media = ' + count_m);
   var m_userInfo = new UserInfo();
   var start = new Date();
@@ -105,9 +105,10 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
       .then(function(results) {
       // result should be Media[][]
       var media = _.flatten(results);
-      console.log(media[1]);
+      console.log(media[0]);
       for(var k in media){
 
+        console.log(media[k]['_params']['likeCount']);
         var d_ms = media[k]['_params']['takenAt'];
         var d = new Date(d_ms);
         var s_date = date.format(d, 'YYYY-MM-DD');
@@ -119,6 +120,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
           if(media[k]['_params']['viewCount']) datesCountViewssAll[datesCountViewssAll.length] = media[k]['_params']['viewCount'];
           else datesCountViewssAll[datesCountViewssAll.length] = 0;
           typeMediaAll[typeMediaAll.length] = media[k]['_params']['mediaType'];
+          takenAtAll[takenAtAll.length] = d_ms;
         }
         else {
           datesCountLikeAll[datesAll.indexOf(s_date)] =
@@ -129,6 +131,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
             datesCountViewssAll[datesAll.indexOf(s_date)] =
                              datesCountViewssAll[datesAll.indexOf(s_date)]+ media[k]['_params']['viewCount'];
           }
+          takenAtAll[takenAtAll.length] = d_ms;
         }
         //console.log(media[k]['_params']['takenAt'] +'-----'+ date.format(d, 'YYYY-MM'));
 
@@ -153,12 +156,12 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
     for (var k in datesAll){
 
       var dChard = new ChartsData(typeMediaAll[k], datesAll[k], datesCountLikeAll[k],
-                   datesCountCommentsAll[k], datesCountViewssAll[k]);
+                   datesCountCommentsAll[k], datesCountViewssAll[k], takenAtAll[k]);
       charts.push(dChard);
 
     }
 
-    //charts.length = 5;
+    charts.length = 5;
 
     var userLikesArr = JSON.stringify ({
       'userInfoMedia' : m_userInfo,
