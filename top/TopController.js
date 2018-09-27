@@ -128,7 +128,9 @@ function setCookie(data, res, count_m, session, accountId, dir, user) {
                count_promise_true ++;
               _.each(comments, function(comment)  {
                         console.log('this is comment');
-
+                        console.log(comment['params']['account']['username']);
+                        console.log(comment['params']['account']['id']);
+                        console.log('---------------');
                         var uname = comment['params']['account']['username'];
                         var picture = comment['params']['account']['picture'];
 

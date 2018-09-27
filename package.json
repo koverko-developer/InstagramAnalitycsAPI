@@ -15,6 +15,7 @@
     "firebase": "^5.5.0",
     "instagram-private-api": "^0.6.8",
     "request": "^2.88.0",
+    "system-sleep": "^1.3.6",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
