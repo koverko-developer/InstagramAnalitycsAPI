@@ -76,7 +76,7 @@ function getCookie(req,res, username, accountId, user, type) {
 }
 function setCookie(req,data, res, count_m, session, accountId, dir, user) {
   var start = new Date();
-  var feed = new Client.Feed.UserMedia(session, '5356749985');//313212819
+  var feed = new Client.Feed.UserMedia(session, accountId);//313212819
   var allHashTags = [];
   var sortHashTags = [];
   var allHT = [];

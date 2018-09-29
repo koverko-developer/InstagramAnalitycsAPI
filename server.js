@@ -10,6 +10,7 @@ var PostsController = require('./posts/PostsController');
 var AudienceController = require('./audience/AudienceController');
 var HashtagsController = require('./hashtags/HashtagsController');
 var StalkersController = require('./stalkers/StalkersController');
+var PromotionController = require('./hashtag_promotion/PromotionController');
 
 var port = process.env.PORT || 80;
 
@@ -27,6 +28,8 @@ app.use('/top/', TopController);
 app.use('/posts/', PostsController);
 app.use('/audience/', AudienceController);
 app.use('/stalkers/', StalkersController);
+app.use('/hashtags/', HashtagsController);
+app.use('/promotion/', PromotionController);
 
 // Running the server
 app.listen(port, () => {
