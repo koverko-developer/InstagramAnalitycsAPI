@@ -70,8 +70,7 @@ function getCookie(req,res, username, accountId, user, type, f_b) {
           'type' : 'ok',
           'code' : 201,
         })
-        res.send(JSON.parse(response));
-
+      res.send(JSON.parse(response));
       if(type === 1) setCookie(req,d, res, session, accountId, dir, user, f_b);
       //else if(type === 2) setCookieLikes(d, res, count, session, accountId, dir, user);
     })
@@ -210,7 +209,7 @@ async function x(session, accountId, res, f_b){
     }
 
 
-  res.send('allResults[0]');
+  //res.send('allResults[0]');
 }
 
 
