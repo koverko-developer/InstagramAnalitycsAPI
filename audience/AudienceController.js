@@ -131,10 +131,8 @@ async function x(session, accountId, res, f_b){
         "count_followers_on" :0,
         "count_followers_off" :0
       });
-
+      x(session, accountId, res, f_b)
     }else{
-
-
 
       var old_user_ids = [];
       var old_user_ids_fb = [];
