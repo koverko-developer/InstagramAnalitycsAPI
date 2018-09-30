@@ -112,6 +112,10 @@ async function x(session, accountId, res, f_b){
 
    console.log('f_b = ' + f_b);
    if(!f_b) {
+     firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
+         value: true,
+       });
+
      for(var k in allResults){
      firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
          id: allResults[k]['_params']['id'],
@@ -130,9 +134,7 @@ async function x(session, accountId, res, f_b){
 
     }else{
 
-      firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
-          value: true,
-        });
+
 
       var old_user_ids = [];
       var old_user_ids_fb = [];
