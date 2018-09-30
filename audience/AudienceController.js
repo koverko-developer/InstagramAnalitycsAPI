@@ -129,6 +129,11 @@ async function x(session, accountId, res, f_b){
       });
 
     }else{
+
+      firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
+          value: true,
+        });
+
       var old_user_ids = [];
       var old_user_ids_fb = [];
 
