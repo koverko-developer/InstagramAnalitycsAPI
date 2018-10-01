@@ -70,7 +70,7 @@ function getCookie(stalkers, req,res, username, accountId, user) {
       res.send(JSON.parse(response));
 
       firebase.database().ref('/users/' + accountId + "/stalkers/progress/").set({
-          value: false,
+          value: true,
         });
 
 
