@@ -55,6 +55,10 @@ function getCookie(req,res, username, accountId, user, type) {
   var storage = new Client.CookieFileStorage(dir);
   var session = new Client.Session(device, storage)
 
+  firebase.database().ref('/users/' + accountId + "/hashtags/progress/").set({
+      value: true,
+    });
+
   var count = 1;
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
@@ -63,6 +67,12 @@ function getCookie(req,res, username, accountId, user, type) {
     .on('data', function (chunk) {
       d = chunk;
       //console.log(d);
+      console.log('set Cookie');
+        var response = JSON.stringify({
+          'type' : 'ok',
+          'code' : 201,
+        })
+      res.send(JSON.parse(response));
       if(type === 1) setCookie(req,d, res, count, session, accountId, dir, user);
       //else if(type === 2) setCookieLikes(d, res, count, session, accountId, dir, user);
     })
@@ -148,20 +158,35 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
       var arr_LikeHT = arr_obj_HT.sort(compareLike);
       var arr_AllHT = arr_obj_HT.sort(compareAll);
 
-      arr_CommentsHT.length = 10;
-      //arr_LikeHT.length = 10;
-      arr_AllHT.length = 10;
+      firebase.database().ref('/users/' + accountId + "/hashtags/progress/").set({
+          value: false,
+        });
 
-      for(var i =0; i< arr_LikeHT.length; i++){
-        if(i != 5){
-          console.log(arr_LikeHT[i]);
-        }else {
-          return;
-        }
-      }
+      firebase.database().ref('/users/' + accountId + "/hashtags/ht_comments/").set({
+          value: arr_CommentsHT,
+        });
+
+      firebase.database().ref('/users/' + accountId + "/hashtags/ht_like/").set({
+          value: arr_LikeHT,
+       });
+
+      firebase.database().ref('/users/' + accountId + "/hashtags/ht_all/").set({
+           value: arr_AllHT,
+      });
+      // arr_CommentsHT.length = 10;
+      // //arr_LikeHT.length = 10;
+      // arr_AllHT.length = 10;
+      //
+      // for(var i =0; i< arr_LikeHT.length; i++){
+      //   if(i != 5){
+      //     console.log(arr_LikeHT[i]);
+      //   }else {
+      //     return;
+      //   }
+      // }
       //console.log(sortHashTags.length + '---------' + allHashTags.length);
       //console.log(allHT.length + '---------' + likeHT.length + '---------------' + commentHT.length);
-      res.send(arr_LikeHT);
+      //res.send(arr_LikeHT);
 
       //console.log(arr_AllHT);
     var end = new Date();
