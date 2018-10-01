@@ -62,6 +62,18 @@ function getCookie(stalkers, req,res, username, accountId, user) {
     .on('data', function (chunk) {
       d = chunk;
       //console.log(d);
+      console.log('set Cookie');
+        var response = JSON.stringify({
+          'type' : 'ok',
+          'code' : 201,
+        })
+      res.send(JSON.parse(response));
+
+      firebase.database().ref('/users/' + accountId + "/stalkers/progress/").set({
+          value: false,
+        });
+
+
       if(stalkers === 'Anonymous')x(d, res, count, session, accountId, dir, user);
       else setCookieLikes(d, res, count, session, accountId, dir, user);
     })
@@ -200,10 +212,23 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
 
       if(b){
         if(rand_coll == rand_coll_true) {
-          console.log('rand true'); res.send(sort_stalkers_id);
+
+
           for(var j in sort_stalkers_id){
             console.log(sort_stalkers_uname[j] + ' --- '+ sort_stalkers_col_like[j] + '-----' + sort_stalkers_col_comments[j]);
+            var key = firebase.database().ref('/users/' + accountId + "/stalkers/users/").push();
+            key.set({
+                id    : sort_stalkers_id[j],
+                uname : sort_stalkers_uname[j],
+                fullname : sort_stalkers_fullname[j],
+                picture : sort_stalkers_picture[j],
+                col_like : sort_stalkers_col_like[j],
+                col_comments : sort_stalkers_col_comments[j]
+            });
           }
+          firebase.database().ref('/users/' + accountId + "/stalkers/progress/").set({
+              value: false,
+            });
         }
         else console.log('wait '+rand_coll_true + ' from '+rand_coll);
       }
