@@ -258,7 +258,7 @@ async function x(data, res, count, session, accountId, dir, user){
   //     value: true,
   // });
   console.log('stalkesr false');
-  res.send('end');
+  //res.send('end');
   var feed = new Client.Feed.AccountFollowers(session, accountId);
   const allResults = await feed.all();
 
