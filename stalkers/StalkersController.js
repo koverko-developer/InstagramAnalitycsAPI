@@ -127,10 +127,10 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                       var id= likes[k]['_params']['id'];
                       if(k == likes.length -1) checkcInArr(res, rand_coll, rand_coll_true, uname,fullName , id, picture,
                                   1, 0, old_user_ids_fb, stalkers_obj, true, sort_stalkers_id, sort_stalkers_uname,
-                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments);
+                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments, accountId);
                       else checkcInArr(res, rand_coll, rand_coll_true, uname,fullName , id, picture,
                                   1, 0, old_user_ids_fb, stalkers_obj, false, sort_stalkers_id, sort_stalkers_uname,
-                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments);
+                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments, accountId);
                      }
                      })
                     .catch(function (err) {
@@ -158,11 +158,11 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                                     if(count == comments.length){
                                       checkcInArr(res, rand_coll, rand_coll_true, uname,fullName , id, picture,
                                                   0, 1, old_user_ids_fb, stalkers_obj, true, sort_stalkers_id, sort_stalkers_uname,
-                                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments);
+                                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments,accountId);
                                     }else {
                                       checkcInArr(res, rand_coll, rand_coll_true, uname,fullName , id, picture,
                                                   0, 1, old_user_ids_fb, stalkers_obj, false, sort_stalkers_id, sort_stalkers_uname,
-                                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments);
+                                                  sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments,accountId);
                                     }
 
                                 }
@@ -189,7 +189,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
   }
 function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
     userId, picture, likesCount, commentsCount, old_user_ids_fb, stalkers_obj, b, sort_stalkers_id, sort_stalkers_uname,
-    sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments) {
+    sort_stalkers_fullname, sort_stalkers_picture, sort_stalkers_col_like, sort_stalkers_col_comments, accountId) {
 
     try{
 
@@ -271,6 +271,6 @@ async function x(data, res, count, session, accountId, dir, user){
     });
    }
 
-   setCookieLikes(data, res, count_m, session, accountId, dir, user);
+   setCookieLikes(data, res, count, session, accountId, dir, user);
 }
   module.exports = stalkers;
