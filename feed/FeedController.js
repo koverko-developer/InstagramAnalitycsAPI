@@ -118,8 +118,8 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
         }else if(mediaType == 8) {
             var carousel_media = media[k]['_params']['carouselMedia'];
 
-            if(carousel_media[0]['_params']['images'][0]) post.setimages(carousel_media[0]['_params']['images']);
-            else if(carousel_media[0]['_params']['imageVersions2']['candidates'][0]) post.setimages(carousel_media[0]['_params']['imageVersions2']);
+            if(carousel_media[0]['_params']['images']) post.setimages(carousel_media[0]['_params']['images'][0]);
+            else if(carousel_media[0]['_params']['imageVersions2']) post.setimages(carousel_media[0]['_params']['imageVersions2']['candidates'][0]);
 
         }else if(mediaType == 2) {
            post.setimages(media[k]['_params']['images'][0]);
