@@ -114,15 +114,15 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
         var post = new Post(mediaType, count_like,count_commentst,count_view ,pk, text);
 
         if(mediaType == 1){
-            post.setimageVersions2(media[k]['_params']['imageVersions2']);
+            post.setimages(media[k]['_params']['imageVersions2']['candidates'][0]);
         }else if(mediaType == 8) {
             var carousel_media = media[k]['_params']['carouselMedia'];
 
-            if(carousel_media[0]['_params']['images']) post.setimages(carousel_media[0]['_params']['images']);
-            else if(carousel_media[0]['_params']['imageVersions2']) post.setimageVersions2(carousel_media[0]['_params']['imageVersions2']);
+            if(carousel_media[0]['_params']['images'][0]) post.setimages(carousel_media[0]['_params']['images']);
+            else if(carousel_media[0]['_params']['imageVersions2']['candidates'][0]) post.setimages(carousel_media[0]['_params']['imageVersions2']);
 
         }else if(mediaType == 2) {
-           post.setimages(media[k]['_params']['images']);
+           post.setimages(media[k]['_params']['images'][0]);
            // post.setvideos(media[k]['_params']['videos']);
            // post.setduration(media[k]['_params']['video']['duration'])
         }
