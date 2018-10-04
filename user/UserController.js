@@ -250,12 +250,7 @@ function getCookie(req,res, username, accountId) {
       setCookie(d, res, count, session, accountId, dir);
     })
     .on('end', function () {
-      fs.writeFile(dir, d , function(err) {
-        if(err) {
-        }else {
-         console.log('write data users');
-        }
-      });
+
         console.log('All the data in the file has been read');
         readStream.destroy();
     })
@@ -266,7 +261,12 @@ function getCookie(req,res, username, accountId) {
 function setCookie(data, res, count_m, session, accountId, dir) {
   console.log('set cookie');
   var feed = new Client.Feed.UserMedia(session, accountId);
-
+  fs.writeFile(data, d , function(err) {
+    if(err) {
+    }else {
+     console.log('write data users');
+    }
+  });
   console.log('count media = ' + count_m);
   var m_userInfo = new UserInfo();
   var start = new Date();
@@ -327,7 +327,7 @@ function setCookie(data, res, count_m, session, accountId, dir) {
       fs.writeFile(dir, data , function(err) {
         if(err) {
         }else {
-         console.log('write data');
+         console.log('write data users');
         }
       });
     })
