@@ -248,6 +248,8 @@ function getCookie(req,res, username, accountId) {
       d = chunk;
       console.log('set cookie');
       setCookie(d, res, count, session, accountId, dir);
+      setCookieC(d, res, count, session, accountId, dir, username)
+      setCookieLikes(d, res, count, session, accountId, dir, username)
     })
     .on('end', function () {
 
@@ -333,5 +335,266 @@ function setCookie(data, res, count_m, session, accountId, dir) {
     })
 
 }
+
+function setCookieC(data, res, count_m, session, accountId, dir, user) {
+
+  var topUsers = [];
+  var usersAll = []
+  var usersSort = []
+  var usersProfile = []
+
+  var start = new Date();
+  var feed = new Client.Feed.UserMedia(session, accountId);
+  console.log('count media = ' + count_m);
+      Promise.mapSeries(_.range(count_m), function() {
+       return feed.get();
+      })
+      .then(function(results) {
+      // result should be Media[][]
+      var media = _.flatten(results);
+      //console.log(media[1]);
+      var count_promise = 0;
+      var count_promise_true = 0;
+      for(var k in media){
+        if(media[k]['_params']['commentCount'] > 0) {
+            console.log(count_promise + '  +=  ' + media[k]['_params']['commentCount']);
+            count_promise += 1;
+            const feed = new Client.Feed.MediaComments(session, media[k]['id']);
+        		let originalCursor = feed.getCursor();
+        		feed.get().then(function(comments) {
+               count_promise_true ++;
+              _.each(comments, function(comment)  {
+                        console.log('this is comment');
+                        console.log(comment['params']['account']['username']);
+                        console.log(comment['params']['account']['id']);
+                        console.log('---------------');
+                        var uname = comment['params']['account']['username'];
+                        var picture = comment['params']['account']['picture'];
+
+                        if(uname != user){
+                          usersAll[usersAll.length] = uname;
+                          if(usersSort.indexOf(uname) === -1) {
+                            usersSort[usersSort.length] = uname;
+                            usersProfile[usersProfile.length] = picture;
+                          }
+                        }
+                        //console.log(uname + '--' + picture);
+
+                        if(count_promise_true == count_promise) {
+
+                          for(var k in usersSort){
+                            var col = 0;
+
+                            for(var j in usersAll){
+                              if(usersAll[j] == usersSort[k]) col++;
+                            }
+
+                            var usertop = new TopUser(usersSort[k], '', usersProfile[k]);
+                            usertop.setcount_comments(col);
+                            topUsers.push(usertop);
+
+                          }
+
+                          console.log('end');
+                          console.log(usersAll);
+                          console.log(usersSort);
+                          console.log(usersProfile);
+                          topUsers.sort(compare);
+                          if(topUsers.length > 5)topUsers.length = 5;
+                          firebase.database().ref('/users/' + accountId + "/top/comments/").set({
+                              value: topUsers,
+                            });
+                        }else {
+                          console.log('waiting '+ count_promise_true+' from '+count_promise);
+                        }
+
+                    })
+                    //console.log('more available ' + feed.mor  eAvailable);
+                }).catch(function(err) {
+                  console.error(err.message)}
+                );
+        }
+      }
+
+      var end = new Date();
+      console.log('Цикл занял '+(end - start)+' ms');
+
+      var urls = _.map(media, function(medium) {
+         return _.last(medium)
+      });
+      //console.log(results);
+        fs.writeFile(dir, data , function(err) {
+          if(err) {
+          }else {
+
+          }
+        });
+      })
+
+  }
+function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
+    var topUsers = [];
+    var usersAll = []
+    var usersSort = []
+    var usersProfile = []
+
+
+    var start = new Date();
+    var feed = new Client.Feed.UserMedia(session, accountId);
+    console.log('count media = ' + count_m);
+        Promise.mapSeries(_.range(count_m), function() {
+         return feed.get();
+        })
+        .then(function(results) {
+        // result should be Media[][]
+        var media = _.flatten(results);
+        //console.log(media[1]);
+        var count_promise = 0;
+        var count_promise_true = 0;
+
+        var rand_coll = 0;
+        for(var k in media){
+
+
+          count_promise++;
+          console.log(media[0]['id']);
+          Client.Media.likers(session, media[k]['id'])
+                .then(function (likes) {
+                    //console.log('get likes');
+                    count_promise_true++;
+                    console.log(likes.length);
+                    rand_coll+=likes.length;
+                    for (var k in likes){
+
+                      var uname = likes[k]['_params']['username'];
+                      var picture = likes[k]['_params']['picture'];
+                      //console.log(rand_coll);
+                      //console.log(uname);
+                      if(uname != user){
+                        usersAll[usersAll.length] = uname;
+                        if(usersSort.indexOf(uname) === -1) {
+                          usersSort[usersSort.length] = uname;
+                          usersProfile[usersProfile.length] = picture;
+                        }
+                      }
+                    }
+
+                    if(count_promise_true == count_promise) {
+
+                      for(var k in usersSort){
+                        var col = 0;
+
+                        for(var j in usersAll){
+                          if(usersAll[j] == usersSort[k]) col++;
+                        }
+
+                        var usertop = new TopUser(usersSort[k], '', usersProfile[k]);
+                        usertop.setcount_comments(col);
+                        topUsers.push(usertop);
+
+                      }
+
+                      console.log(topUsers);
+                      topUsers.sort(compare);
+                      if(topUsers.length > 5)topUsers.length = 5;
+                      firebase.database().ref('/users/' + accountId + "/top/likes/").set({
+                          value: topUsers,
+                        });
+                      // console.log(rand_coll);
+                      // console.log(usersSort);
+                    }
+                    else console.log('white ' + count_promise_true + ' from '+ count_promise);
+                })
+                .catch(function (err) {
+                  console.log(err);
+                });
+
+        }
+        if(count_promise_true == count_promise) {
+          console.log(rand_coll);
+        }
+        else console.log('white ' + count_promise_true + ' from '+ count_promise);
+
+        for(var k in media){
+
+
+
+            //console.log(media[k]['_params']['topLikers']);
+            // var topL = media[k]['_params']['topLikers'];
+            // for(var k in topL){
+            //   //console.log(topL[k]);
+            //   usersAll[usersAll.length] = topL[k];
+            //   if(usersSort.indexOf(topL[k]) === -1) {
+            //     usersSort[usersSort.length] = topL[k];
+            //   }
+            // }
+
+        }
+
+        for(var k in usersSort){
+          var col = 0;
+
+          for(var j in usersAll){
+            if(usersAll[j] == usersSort[k]) col++;
+          }
+
+          var usertop = new TopUser(usersSort[k], '', '');
+          usertop.setcount_comments(col);
+          topUsers.push(usertop);
+          topUsers.sort(compare);
+          if(topUsers.length > 5)topUsers.length = 5;
+        }
+
+        var newUserTops = []
+
+        // for(var k in topUsers){
+        //   count_promise++;
+        //   //console.log(topUsers[k].getusername());
+        //   Client.Account.searchForUser(session, topUsers[k].getusername())
+        //   .then(function(account) {
+        //      var usernames = account['_params']['username'];
+        //      var fillnames = account['_params']['fullName'];
+        //      //console.log(account['_params']['profilePicUrl']);
+        //      var pic = account['_params']['profilePicUrl'];
+        //      //console.log('-------------------------');
+        //      var usertop = new TopUser(usernames, fillnames, pic);
+        //      newUserTops.push(usertop);
+        //      count_promise_true++;
+        //      if(count_promise_true == count_promise) {
+        //        res.send(newUserTops)
+        //      }else {
+        //        console.log('wait');
+        //      }
+        //      return account.id; })
+        //   .catch(function(err) {
+        //     console.error(err.message)}
+        //   );
+        // }
+
+      var end = new Date();
+      console.log('Цикл занял '+(end - start)+' ms');
+
+      var urls = _.map(media, function(medium) {
+         return _.last(medium)
+      });
+      //console.log(results);
+        fs.writeFile(dir, data , function(err) {
+          if(err) {
+          }else {
+
+          }
+        });
+      })
+
+  }
+
+  function compare(a,b) {
+    if (b.count_comments < a.count_comments)
+      return -1;
+    if (b.count_comments > a.count_comments)
+      return 1;
+    return 0;
+  }
+  module.exports = top;
 
 module.exports = user;
