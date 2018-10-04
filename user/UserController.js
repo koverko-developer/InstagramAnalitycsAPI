@@ -320,8 +320,7 @@ function setCookie(data, res, count_m, session, accountId, dir) {
       fs.writeFile(dir, data , function(err) {
         if(err) {
         }else {
-         //console.log(count_like);
-
+         console.log('write data');
         }
       });
     })
