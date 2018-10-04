@@ -253,7 +253,7 @@ function getCookie(req,res, username, accountId) {
       fs.writeFile(dir, d , function(err) {
         if(err) {
         }else {
-         console.log('write data');
+         console.log('write data users');
         }
       });
         console.log('All the data in the file has been read');
