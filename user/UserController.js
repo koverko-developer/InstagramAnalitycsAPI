@@ -595,6 +595,5 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
       return 1;
     return 0;
   }
-  module.exports = top;
 
 module.exports = user;
