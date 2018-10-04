@@ -7,7 +7,7 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var Client = require('instagram-private-api').V1;
 //var device = new Client.Device('koverko_dev');
 
-
+var TopUser = require('../model/TopUser');
 
 var bodyParser = require('body-parser');
 var firebase = require('firebase');
