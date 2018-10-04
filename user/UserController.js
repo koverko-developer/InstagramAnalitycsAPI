@@ -246,7 +246,7 @@ function getCookie(req,res, username, accountId) {
     .on('data', function (chunk) {
       d = chunk;
       console.log('set cookie');
-      fs.writeFile(dir, data , function(err) {
+      fs.writeFile(dir, d , function(err) {
         if(err) {
         }else {
          console.log('write data');
