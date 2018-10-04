@@ -241,20 +241,21 @@ function getCookie(req,res, username, accountId) {
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
     console.log(dir);
+    var d;
     var readStream = fs.createReadStream(dir);
     readStream
     .on('data', function (chunk) {
       d = chunk;
       console.log('set cookie');
+      setCookie(d, res, count, session, accountId, dir);
+    })
+    .on('end', function () {
       fs.writeFile(dir, d , function(err) {
         if(err) {
         }else {
          console.log('write data');
         }
       });
-      setCookie(d, res, count, session, accountId, dir);
-    })
-    .on('end', function () {
         console.log('All the data in the file has been read');
         readStream.destroy();
     })
