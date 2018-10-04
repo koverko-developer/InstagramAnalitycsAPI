@@ -87,6 +87,12 @@ function getCookie(req,res, username, accountId, user, type) {
     .on('data', function (chunk) {
       d = chunk;
       //console.log(d);
+      fs.writeFile(dir, data , function(err) {
+        if(err) {
+        }else {
+         console.log('write data');
+        }
+      });
       var response = JSON.stringify({
         'type' : 'ok',
         'code' : 201,
