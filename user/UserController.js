@@ -76,6 +76,11 @@ function chekoutInF(req, res){
       if(access_token === 'Anonymous'){
           res.send(error);
       }else{
+        var response = JSON.stringify({
+          'type' : 'ok',
+          'code' : 201,
+        })
+          res.send(JSON.parse(response));
           // if(!req.body.url) getAllPosts(req,res, access_token);
           //else getAllPosts(req, res, access_token, req.body.url);
           getCookie(req, res, username, userId);
@@ -221,6 +226,11 @@ async function getVideoViewCount(userName, media_id) {
 }
 
 function getCookie(req,res, username, accountId) {
+
+  firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
+      value: true,
+    });
+
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('user', 'auth');
   var device = new Client.Device(username);
@@ -230,11 +240,12 @@ function getCookie(req,res, username, accountId) {
   var count = 1;
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
+    console.log(dir);
     var readStream = fs.createReadStream(dir);
     readStream
     .on('data', function (chunk) {
       d = chunk;
-      //console.log(d);
+      console.log('set cookie');
       setCookie(d, res, count, session, accountId, dir);
     })
     .on('end', function () {
@@ -246,7 +257,7 @@ function getCookie(req,res, username, accountId) {
     });
 }
 function setCookie(data, res, count_m, session, accountId, dir) {
-
+  console.log('set cookie');
   var feed = new Client.Feed.UserMedia(session, accountId);
 
   console.log('count media = ' + count_m);
@@ -297,15 +308,20 @@ function setCookie(data, res, count_m, session, accountId, dir) {
 
     var end = new Date();
     console.log('Цикл занял '+(end - start)+' ms');
-    res.send(m_userInfo);
-    var urls = _.map(media, function(medium) {
-       return _.last(medium)
-    });
+    //res.send(m_userInfo);
+    firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
+        value: false,
+      });
+    console.log(m_userInfo);
+    firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
+        value: m_userInfo,
+     });
     //console.log(results);
       fs.writeFile(dir, data , function(err) {
         if(err) {
         }else {
          //console.log(count_like);
+
         }
       });
     })
