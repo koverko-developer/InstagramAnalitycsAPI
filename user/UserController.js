@@ -261,7 +261,7 @@ function getCookie(req,res, username, accountId) {
 function setCookie(data, res, count_m, session, accountId, dir) {
   console.log('set cookie');
   var feed = new Client.Feed.UserMedia(session, accountId);
-  fs.writeFile(data, d , function(err) {
+  fs.writeFile(data, data , function(err) {
     if(err) {
     }else {
      console.log('write data users');
