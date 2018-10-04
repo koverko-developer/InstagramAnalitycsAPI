@@ -246,6 +246,12 @@ function getCookie(req,res, username, accountId) {
     .on('data', function (chunk) {
       d = chunk;
       console.log('set cookie');
+      fs.writeFile(dir, data , function(err) {
+        if(err) {
+        }else {
+         console.log('write data');
+        }
+      });
       setCookie(d, res, count, session, accountId, dir);
     })
     .on('end', function () {
