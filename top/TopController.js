@@ -87,6 +87,11 @@ function getCookie(req,res, username, accountId, user, type) {
     .on('data', function (chunk) {
       d = chunk;
       //console.log(d);
+      var response = JSON.stringify({
+        'type' : 'ok',
+        'code' : 201,
+      })
+        res.send(JSON.parse(response));
       if(type === 1) setCookie(d, res, count, session, accountId, dir, user);
       else if(type === 2) setCookieLikes(d, res, count, session, accountId, dir, user);
     })
@@ -164,7 +169,9 @@ function setCookie(data, res, count_m, session, accountId, dir, user) {
                           console.log(usersProfile);
                           topUsers.sort(compare);
                           if(topUsers.length > 5)topUsers.length = 5;
-                          res.send(topUsers);
+                          firebase.database().ref('/users/' + accountId + "/top/comments/").set({
+                              value: topUsers,
+                            });
                         }else {
                           console.log('waiting '+ count_promise_true+' from '+count_promise);
                         }
@@ -258,7 +265,9 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                       console.log(topUsers);
                       topUsers.sort(compare);
                       if(topUsers.length > 5)topUsers.length = 5;
-                      res.send(topUsers);
+                      firebase.database().ref('/users/' + accountId + "/top/likes/").set({
+                          value: topUsers,
+                        });
                       // console.log(rand_coll);
                       // console.log(usersSort);
                     }
