@@ -400,7 +400,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
                           console.log(usersSort);
                           console.log(usersProfile);
                           topUsers.sort(compare);
-                          if(topUsers.length > 5)topUsers.length = 5;
+                          //if(topUsers.length > 5)topUsers.length = 5;
                           firebase.database().ref('/users/' + accountId + "/top/comments/").set({
                               value: topUsers,
                             });
@@ -496,7 +496,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 
                       console.log(topUsers);
                       topUsers.sort(compare);
-                      if(topUsers.length > 5)topUsers.length = 5;
+                      //if(topUsers.length > 5) topUsers.length = 5;
                       firebase.database().ref('/users/' + accountId + "/top/likes/").set({
                           value: topUsers,
                         });
