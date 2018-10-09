@@ -395,12 +395,14 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
                             topUsers.push(usertop);
                           }
 
-                          usertopssortnew = topUsers;
-
                           for(var i = 1; i < topUsers.length; i++){
                              var a1 = topUsers[i].getusername();
                              var a2 = topUsers[i-1].getusername();
-                             if(a1 === a2) topUsers.splice(i);
+
+                             if(a1 == a2) {
+                               console.log(a1 + '   ==   ' + a2);
+                               topUsers.splice(i);
+                             }
                           }
 
                           console.log('end');
