@@ -392,7 +392,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
 
                             var usertop = new TopUser(usersSort[k], '', usersProfile[k]);
                             usertop.setcount_comments(col);
-                            if(usertop.indexOf(usertop) === -1) topUsers.push(usertop);
+                            if(topUsers.indexOf(usertop) === -1) topUsers.push(usertop);
 
                           }
 
