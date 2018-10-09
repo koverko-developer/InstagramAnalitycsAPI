@@ -379,21 +379,28 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
                           }
                         }
                         //console.log(uname + '--' + picture);
-
+                        var usertopssortnew = [];
                         if(count_promise_true == count_promise) {
 
                           for(var k in usersSort){
                             var col = 0;
-
                             for(var j in usersAll){
-                              if(usersAll[j] == usersSort[k]) col++;
+                              if(usersAll[j] == usersSort[k]) {
+                                col++;
+                              }
                             }
-
 
                             var usertop = new TopUser(usersSort[k], '', usersProfile[k]);
                             usertop.setcount_comments(col);
-                            if(topUsers.indexOf(usertop) === -1) topUsers.push(usertop);
+                            topUsers.push(usertop);
+                          }
 
+                          usertopssortnew = topUsers;
+
+                          for(var i = 1; i < topUsers.length; i++){
+                             var a1 = topUsers[i].getusername();
+                             var a2 = topUsers[i-1].getusername();
+                             if(a1 === a2) topUsers.splice(i);
                           }
 
                           console.log('end');
