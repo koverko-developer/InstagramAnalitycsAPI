@@ -56,7 +56,7 @@ function getCookie(req,res, username, accountId, user, type) {
   var storage = new Client.CookieFileStorage(dir);
   var session = new Client.Session(device, storage)
 
-  firebase.database().ref('/users/' + accountId + "/hashtags/progress/").set({
+  firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
       value: true,
     });
 
