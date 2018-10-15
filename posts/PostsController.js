@@ -48,12 +48,20 @@ function chekoutInF(req, res, type){
       if(access_token === 'Anonymous'){
           res.send(error);
       }else{
+        console.log('set Cookie');
+          var response = JSON.stringify({
+            'type' : 'ok',
+            'code' : 201,
+          })
+          res.send(JSON.parse(response));
           getCookie(req, res, username, userId, username, type);
       }
     });
 }
 function getCookie(req,res, username, accountId, user, type) {
-
+  firebase.database().ref('/users/' + accountId + "/posts/progress/").set({
+      value: true,
+    });
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('posts', 'auth');
   var device = new Client.Device(username);
@@ -167,11 +175,19 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
       'userInfoMedia' : m_userInfo,
       'chartArr' : charts
     });
+
+    firebase.database().ref('/users/' + accountId + "/posts/progress/").set({
+        value: false,
+    });
+
+    firebase.database().ref('/users/' + accountId + "/feed/value/").set({
+        value: userLikesArr,
+    });
     console.log(JSON.parse(userLikesArr));
     //console.log(datesCountLikeAll);
     var end = new Date();
     console.log('Цикл занял '+(end - start)+' ms');
-    res.send(JSON.parse(userLikesArr));
+    //res.send(JSON.parse(userLikesArr));
     var urls = _.map(media, function(medium) {
        return _.last(medium)
     });
