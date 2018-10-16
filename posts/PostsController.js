@@ -180,7 +180,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
         value: false,
     });
 
-    firebase.database().ref('/users/' + accountId + "/posts/").set({
+    firebase.database().ref('/users/' + accountId + "/posts/value").set({
         value: userLikesArr,
     });
     console.log(JSON.parse(userLikesArr));
