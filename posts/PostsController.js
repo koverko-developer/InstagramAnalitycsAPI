@@ -181,7 +181,8 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
     });
 
     firebase.database().ref('/users/' + accountId + "/posts/value").set({
-        value: userLikesArr,
+        userInfoMedia: m_userInfo,
+        chartArr : charts
     });
     console.log(JSON.parse(userLikesArr));
     //console.log(datesCountLikeAll);
