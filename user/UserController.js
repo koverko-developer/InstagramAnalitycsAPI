@@ -245,25 +245,29 @@ function getCookie(req,res, username, accountId) {
     firebase.database().ref('/users/' + accountId).once('value').then(function(snapshot) {
       var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
       console.log(d);
-      var dir = __dirname + "/cookies/"+username+".json";
-      dir = dir.replace('user', 'auth');
-      const file = fs.createWriteStream(dir);
-      file.write(JSON.stringify(d))
-      file.end();
 
-      var device = new Client.Device(username);
-      var storage = new Client.CookieFileStorage(dir);
-      var session = new Client.Session(device, storage)
 
       var count = 1;
       if(req.body.count_media) count = req.body.count_media;
         console.log('set cookie');
-        setCookie(d, res, count, session, accountId, dir);
-        setCookieC(d, res, count, session, accountId, dir, username)
-        setCookieLikes(d, res, count, session, accountId, dir, username)
+        setCookie(d, res, count, session, accountId, dir, username);
+        //setCookieC(d, res, count, session, accountId, dir, username)
+        //setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
-function setCookie(data, res, count_m, session, accountId, dir) {
+function setCookie(data, res, count_m, session, accountId, di, username) {
+
+  var dir = __dirname + "/cookies/"+username+".json";
+  dir = dir.replace('user', 'auth');
+  const file = fs.createWriteStream(dir);
+  file.write(JSON.stringify(d))
+  file.end();
+
+  var device = new Client.Device(username);
+  var storage = new Client.CookieFileStorage(dir);
+  var session = new Client.Session(device, storage)
+
+
   console.log('set cookie');
   var feed = new Client.Feed.UserMedia(session, accountId);
 
@@ -323,18 +327,29 @@ function setCookie(data, res, count_m, session, accountId, dir) {
     firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
         value: m_userInfo,
      });
+     setCookieC(data, res, count, session, accountId, dir, username)
     //console.log(results);
-      fs.writeFile(dir, data , function(err) {
-        if(err) {
-        }else {
-         console.log('write data users');
-        }
-      });
+      // fs.writeFile(dir, data , function(err) {
+      //   if(err) {
+      //   }else {
+      //    console.log('write data users');
+      //   }
+      // });
     })
 
 }
 
-function setCookieC(data, res, count_m, session, accountId, dir, user) {
+function setCookieC(data, res, count_m, session, accountId, dir, username) {
+
+  var dir = __dirname + "/cookies/"+username+".json";
+  dir = dir.replace('user', 'auth');
+  const file = fs.createWriteStream(dir);
+  file.write(JSON.stringify(data))
+  file.end();
+
+  var device = new Client.Device(username);
+  var storage = new Client.CookieFileStorage(dir);
+  var session = new Client.Session(device, storage)
 
   var topUsers = [];
   var usersAll = []
@@ -369,7 +384,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
                         var uname = comment['params']['account']['username'];
                         var picture = comment['params']['account']['picture'];
 
-                        if(uname != user){
+                        if(uname != username){
                           usersAll[usersAll.length] = uname;
                           if(usersSort.indexOf(uname) === -1) {
                             usersSort[usersSort.length] = uname;
@@ -423,7 +438,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
                 );
         }
       }
-
+      setCookieLikes(data, res, count, session, accountId, dir, username)
       var end = new Date();
       console.log('Цикл занял '+(end - start)+' ms');
 
@@ -431,16 +446,23 @@ function setCookieC(data, res, count_m, session, accountId, dir, user) {
          return _.last(medium)
       });
       //console.log(results);
-        fs.writeFile(dir, data , function(err) {
-          if(err) {
-          }else {
-
-          }
-        });
+        // fs.writeFile(dir, data , function(err) {
+        //   if(err) {
+        //   }else {
+        //
+        //   }
+        // });
       })
 
   }
-function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
+function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
+
+    var dir = __dirname + "/cookies/"+username+".json";
+    dir = dir.replace('user', 'auth');
+    const file = fs.createWriteStream(dir);
+    file.write(JSON.stringify(data))
+    file.end();
+
     var topUsers = [];
     var usersAll = []
     var usersSort = []
@@ -478,7 +500,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                       var picture = likes[k]['_params']['picture'];
                       //console.log(rand_coll);
                       //console.log(uname);
-                      if(uname != user){
+                      if(uname != username){
                         usersAll[usersAll.length] = uname;
                         if(usersSort.indexOf(uname) === -1) {
                           usersSort[usersSort.length] = uname;
