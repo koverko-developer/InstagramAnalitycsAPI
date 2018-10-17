@@ -265,8 +265,8 @@ function getCookie(req,res, username, accountId) {
           d = chunk;
           console.log('set cookie');
           setCookie(d, res, count, session, accountId, dir);
-          setCookieC(d, res, count, session, accountId, dir, username)
-          setCookieLikes(d, res, count, session, accountId, dir, username)
+          //setCookieC(d, res, count, session, accountId, dir, username)
+          //setCookieLikes(d, res, count, session, accountId, dir, username)
         })
         .on('end', function () {
 
