@@ -259,7 +259,7 @@ function getCookie(req,res, username, accountId) {
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
   var dir1 = __dirname + "/cookies/"+username+".json";
   dir1 = dir1.replace('user', 'auth');
-  const file1 = fs1.createWriteStream(dir1);
+  const file1 = fs.createWriteStream(dir1);
   file1.write("JSON.stringify(data)")
   file1.end();
   var dir = __dirname + "/cookies/"+username+".json";
