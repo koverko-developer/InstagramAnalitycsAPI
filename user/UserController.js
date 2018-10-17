@@ -261,7 +261,7 @@ function setCookie(data, res, count_m, session, accountId, dir, username) {
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('user', 'auth');
   const file = fs.createWriteStream(dir);
-  file.write(JSON.stringify(d))
+  file.write(JSON.stringify(data))
   file.end();
 
   var device = new Client.Device(username);
