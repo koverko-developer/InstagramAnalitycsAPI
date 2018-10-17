@@ -244,13 +244,27 @@ function getCookie(req,res, username, accountId) {
 
     firebase.database().ref('/users/' + accountId).once('value').then(function(snapshot) {
       var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
-
+      console.log(d);
       var dir = __dirname + "/cookies/"+username+".json";
       dir = dir.replace('user', 'auth');
       const file = fs.createWriteStream(dir);
       file.write(d)
       file.end();
-        console.log(d);
+
+      var readStream = fs.createReadStream(dir);
+      readStream
+      .on('data', function (chunk) {
+        dd = chunk;
+        console.log(dd);
+      })
+      .on('end', function () {
+          console.log('All the data in the file has been read');
+          readStream.destroy();
+      })
+      .on('close', function (err) {
+        console.log('Stream has been destroyed and file has been closed');
+      });
+
       var device = new Client.Device(username);
       var storage = new Client.CookieFileStorage(dir);
       var session = new Client.Session(device, storage)
