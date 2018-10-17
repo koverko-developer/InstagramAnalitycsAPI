@@ -259,8 +259,8 @@ function getCookie(req,res, username, accountId) {
       if(req.body.count_media) count = req.body.count_media;
         console.log('set cookie');
         setCookie(d, res, count, session, accountId, dir);
-        //setCookieC(d, res, count, session, accountId, dir, username)
-        //setCookieLikes(d, res, count, session, accountId, dir, username)
+        setCookieC(d, res, count, session, accountId, dir, username)
+        setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
 function setCookie(data, res, count_m, session, accountId, dir) {
