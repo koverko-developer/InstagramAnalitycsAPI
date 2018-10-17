@@ -21,7 +21,7 @@ auth.route('/')
       getUserInfo(req, res);
     })
 
-function getUserInfo(req, res) {  
+function getUserInfo(req, res) {
 
   var token = req.body.access_token;
   if(!req.body.access_token) token = '123456';
@@ -66,14 +66,7 @@ function chekoutInF(req, res, body){
       var username = (snapshot.val() && snapshot.val().token) || 'Anonymous';
       if(username === 'Anonymous'){
 
-        firebase.database().ref('/users/' + userId).set({
-            id: userId,
-            access_token: req.body.access_token,
-            username : userName,
-            full_name : userFName,
-            profile_picture : userPicture,
-            cookie : req.body.cookie
-          });
+
           var fs = require('fs');
           var contents = fs.readFileSync(__dirname + "/cookies/koverko_dev1.json", 'utf8');
           console.log(contents);
@@ -81,6 +74,14 @@ function chekoutInF(req, res, body){
             d = d.replace('koverko_dev', userName);
             d = d.replace('IGSC40fb8c41b0d1a7d458cf19afc0f426332f209771e516a73a8e620d8b27a0ec38%3AMeTkXTRKGVyyQvdy4JjsaU3lZH8HnIVe%3A%7B%22_auth_user_id%22%3A5972326347%2C%22_auth_user_backend%22%3A%22accounts.backends.CaseInsensitiveModelBackend%22%2C%22_auth_user_hash%22%3A%22%22%2C%22_platform%22%3A4%2C%22_token_ver%22%3A2%2C%22_token%22%3A%225972326347%3AiiKxdO7mlupOxpSfH4UxQ09hGWfn6BOc%3A1c3ea380af9f677aaee744a508ff5d6bd116caaf857673cfa1a99b45df6d935b%22%2C%22last_refreshed%22%3A1537559179.3596990108%7D', sessions);
             console.log(d);
+            firebase.database().ref('/users/' + userId).set({
+                id: userId,
+                access_token: req.body.access_token,
+                username : userName,
+                full_name : userFName,
+                profile_picture : userPicture,
+                cookie : d
+              });
             const file = fs.createWriteStream(__dirname + "/cookies/"+userName+".json");
             file.write(d)
             file.end();
