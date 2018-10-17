@@ -242,7 +242,7 @@ function getCookie(req,res, username, accountId) {
       value: true,
     });
 
-    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+    firebase.database().ref('/users/' + accountId).once('value').then(function(snapshot) {
       var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
 
       var dir = __dirname + "/cookies/"+userName+".json";
