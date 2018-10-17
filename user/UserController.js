@@ -248,22 +248,8 @@ function getCookie(req,res, username, accountId) {
       var dir = __dirname + "/cookies/"+username+".json";
       dir = dir.replace('user', 'auth');
       const file = fs.createWriteStream(dir);
-      file.write(d)
+      file.write(JSON.parse(d))
       file.end();
-
-      var readStream = fs.createReadStream(dir);
-      readStream
-      .on('data', function (chunk) {
-        dd = chunk;
-        console.log(dd);
-      })
-      .on('end', function () {
-          console.log('All the data in the file has been read');
-          readStream.destroy();
-      })
-      .on('close', function (err) {
-        console.log('Stream has been destroyed and file has been closed');
-      });
 
       var device = new Client.Device(username);
       var storage = new Client.CookieFileStorage(dir);
@@ -273,8 +259,8 @@ function getCookie(req,res, username, accountId) {
       if(req.body.count_media) count = req.body.count_media;
         console.log('set cookie');
         setCookie(d, res, count, session, accountId, dir);
-        setCookieC(d, res, count, session, accountId, dir, username)
-        setCookieLikes(d, res, count, session, accountId, dir, username)
+        //setCookieC(d, res, count, session, accountId, dir, username)
+        //setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
 function setCookie(data, res, count_m, session, accountId, dir) {
