@@ -256,15 +256,14 @@ function getCookie(req,res, username, accountId) {
         //setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
-function setCookie(data, res, count_m, session1, accountId, dir1, username) {
+function setCookie(data, res, count_m, session1, accountId, dir, username) {
 
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('user', 'auth');
   const file = fs.createWriteStream(dir);
-    console.log(data);
   file.write(JSON.stringify(data))
   file.end();
-
+  console.log(dir);
   var device = new Client.Device(username);
   var storage = new Client.CookieFileStorage(dir);
   var session = new Client.Session(device, storage)
