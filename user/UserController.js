@@ -245,7 +245,7 @@ function getCookie(req,res, username, accountId) {
     firebase.database().ref('/users/' + accountId).once('value').then(function(snapshot) {
       var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
 
-      var dir = __dirname + "/cookies/"+userName+".json";
+      var dir = __dirname + "/cookies/"+username+".json";
       dir = dir.replace('user', 'auth');
       const file = fs.createWriteStream(dir);
       file.write(d)
