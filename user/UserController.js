@@ -276,7 +276,7 @@ function getCookie(req,res, username, accountId) {
         .on('close', function (err) {
           console.log('Stream has been destroyed and file has been closed');
         });
-      }
+      });
 }
 function setCookie(data, res, count_m, session, accountId, dir) {
   console.log('set cookie');
