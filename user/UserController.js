@@ -248,7 +248,7 @@ function getCookie(req,res, username, accountId) {
       var dir = __dirname + "/cookies/"+username+".json";
       dir = dir.replace('user', 'auth');
       const file = fs.createWriteStream(dir);
-      file.write(JSON.parse(d))
+      file.write(JSON.stringify(d))
       file.end();
 
       var device = new Client.Device(username);
