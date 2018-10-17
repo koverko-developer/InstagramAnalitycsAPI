@@ -250,12 +250,12 @@ function getCookie(req,res, username, accountId) {
       var count = 1;
       if(req.body.count_media) count = req.body.count_media;
         console.log('set cookie');
-        setCookie(d, res, count, 'session', accountId, dir, username);
+        setCookie(d, res, count, 'session', accountId, 'dir', username);
         //setCookieC(d, res, count, session, accountId, dir, username)
         //setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
-function setCookie(data, res, count_m, session, accountId, di, username) {
+function setCookie(data, res, count_m, session, accountId, dir, username) {
 
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('user', 'auth');
