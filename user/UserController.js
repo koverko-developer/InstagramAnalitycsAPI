@@ -198,67 +198,85 @@ function initialize(urli) {
     })
 }
 async function getVideoViewCount(userName, media_id) {
-  var dir = __dirname + "/cookies/"+userName+".json";
-  dir = dir.replace('user', 'auth');
-  //console.log(dir);
-  var storage = new Client.CookieFileStorage(dir);
-  var session = new Client.Session(device, storage);
-  //console.log(media_id);
-  new Client.Request(session)
-          .setMethod('GET')
-          .setResource('mediaInfo', {mediaId : media_id})
-          .send()
-          .then(function (json) {
-            console.log(json);
-            console.log(new Client.Media(session, json.items[0]['taken_at']));
-            userInfo.setcount_video(1)
-            return new Client.Media(session, json.items[0]);
-          })
-  // return new Request(session)
-  //     .setMethod('GET')
-  //     .setResource('mediaInfo', {mediaId: mediaId})
-  //     .send()
-  //     .then(function(json) {
-  //         return new Media(session, json.items[0])
-  //     })
-  console.log(userName);
+
+  firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+    var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+
+    var dir = __dirname + "/cookies/"+userName+".json";
+    dir = dir.replace('user', 'auth');
+    const file = fs.createWriteStream(dir);
+    file.write(d)
+    file.end();
+
+
+    //console.log(dir);
+    var storage = new Client.CookieFileStorage(dir);
+    var session = new Client.Session(device, storage);
+    //console.log(media_id);
+    new Client.Request(session)
+            .setMethod('GET')
+            .setResource('mediaInfo', {mediaId : media_id})
+            .send()
+            .then(function (json) {
+              console.log(json);
+              console.log(new Client.Media(session, json.items[0]['taken_at']));
+              userInfo.setcount_video(1)
+              return new Client.Media(session, json.items[0]);
+            })
+    // return new Request(session)
+    //     .setMethod('GET')
+    //     .setResource('mediaInfo', {mediaId: mediaId})
+    //     .send()
+    //     .then(function(json) {
+    //         return new Media(session, json.items[0])
+    //     })
+    console.log(userName);
+
+  });
 
 }
 
 function getCookie(req,res, username, accountId) {
 
-  firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
+   firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
       value: true,
     });
 
-  var dir = __dirname + "/cookies/"+username+".json";
-  dir = dir.replace('user', 'auth');
-  var device = new Client.Device(username);
-  var storage = new Client.CookieFileStorage(dir);
-  var session = new Client.Session(device, storage)
+    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+      var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
 
-  var count = 1;
-  if(req.body.count_media) count = req.body.count_media;
-    console.log(count);
-    console.log(dir);
-    var d;
-    var readStream = fs.createReadStream(dir);
-    readStream
-    .on('data', function (chunk) {
-      d = chunk;
-      console.log('set cookie');
-      setCookie(d, res, count, session, accountId, dir);
-      setCookieC(d, res, count, session, accountId, dir, username)
-      setCookieLikes(d, res, count, session, accountId, dir, username)
-    })
-    .on('end', function () {
+      var dir = __dirname + "/cookies/"+userName+".json";
+      dir = dir.replace('user', 'auth');
+      const file = fs.createWriteStream(dir);
+      file.write(d)
+      file.end();
+      var device = new Client.Device(username);
+      var storage = new Client.CookieFileStorage(dir);
+      var session = new Client.Session(device, storage)
 
-        console.log('All the data in the file has been read');
-        readStream.destroy();
-    })
-    .on('close', function (err) {
-      console.log('Stream has been destroyed and file has been closed');
-    });
+      var count = 1;
+      if(req.body.count_media) count = req.body.count_media;
+        console.log(count);
+        console.log(dir);
+        var d;
+        var readStream = fs.createReadStream(dir);
+        readStream
+        .on('data', function (chunk) {
+          d = chunk;
+          console.log('set cookie');
+          setCookie(d, res, count, session, accountId, dir);
+          setCookieC(d, res, count, session, accountId, dir, username)
+          setCookieLikes(d, res, count, session, accountId, dir, username)
+        })
+        .on('end', function () {
+
+            console.log('All the data in the file has been read');
+            readStream.destroy();
+        })
+        .on('close', function (err) {
+          console.log('Stream has been destroyed and file has been closed');
+        });
+      }
 }
 function setCookie(data, res, count_m, session, accountId, dir) {
   console.log('set cookie');
