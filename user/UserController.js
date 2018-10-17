@@ -250,6 +250,7 @@ function getCookie(req,res, username, accountId) {
       const file = fs.createWriteStream(dir);
       file.write(d)
       file.end();
+        console.log(d);
       var device = new Client.Device(username);
       var storage = new Client.CookieFileStorage(dir);
       var session = new Client.Session(device, storage)
