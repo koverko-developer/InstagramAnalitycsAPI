@@ -257,15 +257,11 @@ function getCookie(req,res, username, accountId) {
       });
 }
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
-  var dir1 = __dirname + "/cookies/"+username+".json";
-  dir1 = dir1.replace('user', 'auth');
-  const file1 = fs.createWriteStream(dir1);
-  file1.write("JSON.stringify(data)")
-  file1.end();
+
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('user', 'auth');
   const file = fs.createWriteStream(dir);
-  file.write(JSON.stringify(data))
+  file.write(data)
   file.end();
   console.log(dir);
   var device = new Client.Device(username);
@@ -349,7 +345,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
   var dir = __dirname + "/cookies/"+username+".json";
   dir = dir.replace('user', 'auth');
   const file = fs.createWriteStream(dir);
-  file.write(JSON.stringify(data))
+  file.write(data)
   file.end();
 
   var device = new Client.Device(username);
