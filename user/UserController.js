@@ -245,7 +245,7 @@ function getCookie(req,res, username, accountId) {
     firebase.database().ref('/users/' + accountId).once('value').then(function(snapshot) {
       var d = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
       let data = d;
-      console.log(d);
+      //console.log(d);
 
 
       var count = 1;
@@ -328,7 +328,7 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
     firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
         value: m_userInfo,
      });
-     setCookieC(data, res, count, session, accountId, dir, username)
+     //setCookieC(data, res, count, session, accountId, dir, username)
     //console.log(results);
       // fs.writeFile(dir, data , function(err) {
       //   if(err) {
