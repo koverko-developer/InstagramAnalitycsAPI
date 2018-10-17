@@ -256,37 +256,16 @@ function getCookie(req,res, username, accountId) {
 
       var count = 1;
       if(req.body.count_media) count = req.body.count_media;
-        console.log(count);
-        console.log(dir);
-        var d;
-        var readStream = fs.createReadStream(dir);
-        readStream
-        .on('data', function (chunk) {
-          d = chunk;
-          console.log('set cookie');
-          setCookie(d, res, count, session, accountId, dir);
-          //setCookieC(d, res, count, session, accountId, dir, username)
-          //setCookieLikes(d, res, count, session, accountId, dir, username)
-        })
-        .on('end', function () {
-
-            console.log('All the data in the file has been read');
-            readStream.destroy();
-        })
-        .on('close', function (err) {
-          console.log('Stream has been destroyed and file has been closed');
-        });
+        console.log('set cookie');
+        setCookie(d, res, count, session, accountId, dir);
+        setCookieC(d, res, count, session, accountId, dir, username)
+        setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
 function setCookie(data, res, count_m, session, accountId, dir) {
   console.log('set cookie');
   var feed = new Client.Feed.UserMedia(session, accountId);
-  fs.writeFile(data, data , function(err) {
-    if(err) {
-    }else {
-     console.log('write data users');
-    }
-  });
+
   console.log('count media = ' + count_m);
   var m_userInfo = new UserInfo();
   var start = new Date();
