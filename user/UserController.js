@@ -258,12 +258,20 @@ function getCookie(req,res, username, accountId) {
 }
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
 
-  var dir = __dirname + "/cookies/"+username+".json";
+  var dir = __dirname + "/cookies/"+'koverko_dev1'+".json";
   dir = dir.replace('user', 'auth');
-  const file = fs.createWriteStream(dir);
-  file.write(data)
+  var fs = require('fs');
+  var contents = fs.readFileSync(dir, 'utf8');
+  d = d.replace('koverko_dev', userName);
+  d = d.replace('IGSC40fb8c41b0d1a7d458cf19afc0f426332f209771e516a73a8e620d8b27a0ec38%3AMeTkXTRKGVyyQvdy4JjsaU3lZH8HnIVe%3A%7B%22_auth_user_id%22%3A5972326347%2C%22_auth_user_backend%22%3A%22accounts.backends.CaseInsensitiveModelBackend%22%2C%22_auth_user_hash%22%3A%22%22%2C%22_platform%22%3A4%2C%22_token_ver%22%3A2%2C%22_token%22%3A%225972326347%3AiiKxdO7mlupOxpSfH4UxQ09hGWfn6BOc%3A1c3ea380af9f677aaee744a508ff5d6bd116caaf857673cfa1a99b45df6d935b%22%2C%22last_refreshed%22%3A1537559179.3596990108%7D', sessions);
+  console.log(d);
+
+  var dir_u = __dirname + "/cookies/"+username+".json";
+  dir_u = dir_u.replace('user', 'auth');
+  const file = fs.createWriteStream(dir_u);
+  file.write(d)
   file.end();
-  console.log(dir);
+
   var device = new Client.Device(username);
   var storage = new Client.CookieFileStorage(dir);
   var session = new Client.Session(device, storage)
