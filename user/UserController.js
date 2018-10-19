@@ -256,7 +256,7 @@ function getCookie(req,res, username, accountId) {
         //setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
-function setCookie(data, res, count_m, session1, accountId, dir, username) {
+function setCookie(d, res, count_m, session1, accountId, dir, username) {
 
   var dir = __dirname + "/cookies/"+'koverko_dev1'+".json";
   dir = dir.replace('user', 'auth');
