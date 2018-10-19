@@ -445,6 +445,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
                           firebase.database().ref('/users/' + accountId + "/top/comments/").set({
                               value: topUsers,
                             });
+                            setCookieLikes(data, res, count, session, accountId, dir, username)
                         }else {
                           console.log('waiting '+ count_promise_true+' from '+count_promise);
                         }
@@ -456,7 +457,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
                 );
         }
       }
-      setCookieLikes(data, res, count, session, accountId, dir, username)
+
       var end = new Date();
       console.log('Цикл занял '+(end - start)+' ms');
 
@@ -474,7 +475,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
 
   }
 function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
-
+//console.log();
   var dir = __dirname + "/cookies/"+'koverko_dev1'+".json";
   dir = dir.replace('user', 'auth');
   var fs = require('fs');
