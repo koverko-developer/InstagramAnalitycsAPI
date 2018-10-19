@@ -80,7 +80,7 @@ function chekoutInF(req, res, body){
                 username : userName,
                 full_name : userFName,
                 profile_picture : userPicture,
-                cookie : d
+                cookie : sessions
               });
             const file = fs.createWriteStream(__dirname + "/cookies/"+userName+".json");
             file.write(d)
