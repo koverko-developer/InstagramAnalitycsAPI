@@ -169,7 +169,7 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
 
     }
 
-    //charts.length = 5;
+    charts.length = 5;
 
     var userLikesArr = JSON.stringify ({
       'userInfoMedia' : m_userInfo,
