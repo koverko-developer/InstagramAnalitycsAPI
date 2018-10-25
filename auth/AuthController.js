@@ -30,24 +30,36 @@ function getUserInfo(req, res) {
 
   var device = new Client.Device(login);
   var storage = new Client.CookieFileStorage(__dirname + "/cookies/"+login+".json");
-  Client.Session.create(device, storage, login, pass)
-  .then(function(session) {
-    session.getAccount()
-      .then(function(account) {
-      console.log(account.params)
-      res.send(account.params)
-      firebase.database().ref('/users/' + userId).set({
-                id: account.params.id,
-                access_token: 'req.body.access_token',
-                username : account.params.username,
-                full_name : account.params.fullName,
-                profile_picture : account.params.picture,
-                cookie : '',
-                login : login, 
-                pass : pass
-              });
-      })
-  })
+  var session = new Client.Session(device, storage);
+  //Client.Session.create(device, storage, login, pass);
+  Client.Session.login(session, login, pass)      
+    .then(function(session) {
+        // Now you have a session, we can follow / unfollow, anything...
+      // And we want to follow Instagram official profile
+      session.getAccount()
+            .then(function(account) {
+            console.log(account.params)
+            res.send(account.params)
+            firebase.database().ref('/users/' + userId).set({
+                      id: account.params.id,
+                      access_token: 'req.body.access_token',
+                      username : account.params.username,
+                      full_name : account.params.fullName,
+                      profile_picture : account.params.picture,
+                      cookie : '',
+                      login : login, 
+                      pass : pass
+                    });
+            })
+
+      return [session, Client.Account.searchForUser(session, 'clubvteme_by')]   
+    })
+    .spread(function(session, account) {
+      return Client.Relationship.create(session, account.id);
+    })
+    .then(function(relationship) {
+      console.log(relationship.params)
+    })
 }
 
 function chekoutInF(req, res, body){
