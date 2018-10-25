@@ -72,7 +72,7 @@ function getUII(req, res){
     session.getAccount()
       .then(function(account) {
         console.log(account.params)
-        res.send(account.params.user);
+        res.send(account.params);
       })
 
   });
