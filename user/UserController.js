@@ -30,7 +30,6 @@ user.route('/info/')
 
     })
     .post((req, res) => {
-     console.log('get user info');  
       getUserInfo(req, res);
       //getCookie(req,res);
     })
@@ -69,11 +68,28 @@ function getUserInfo(req, res) {
 
     session.getAccount()
       .then(function(account) {
-        console.log(account)
-        res.send(account);
+        console.log(account.params)
       })
 
   });
+
+  // if(!req.body.access_token) token = '123456';
+  //   console.log(req.body.access_token);
+  //   request('https://api.instagram.com/v1/users/self/?access_token='+token, function (error, response, body) {
+  //       console.log('error:', error); // Print the error if one occurred
+  //       console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+  //       console.log('body:', body); // Print the HTML for the Google homepage.
+  //       if(error == null ){
+  //         var b = JSON.parse(body);
+  //         if(!b['meta']['error_type']) chekoutInF(req, res, body);
+  //         else {
+  //           res.send(body);
+  //         }
+  //       }else {
+  //         res.send(body);
+  //       }
+  //   });
+
 }
 
 function chekoutInF(req, res){
