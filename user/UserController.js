@@ -69,13 +69,11 @@ function getUserInfo(req, res) {
 
     session.getAccount()
       .then(function(account) {
-        console.log(account.params.user)
+        console.log(account)
+        res.send(account);
       })
 
   });
- return;
-  
-
 }
 
 function chekoutInF(req, res){
