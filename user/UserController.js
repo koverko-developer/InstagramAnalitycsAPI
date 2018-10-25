@@ -498,7 +498,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
                             firebase.database().ref('/users/' + accountId + "/top/comments/").set({
                                 value: topUsers,
                               });
-                              //setCookieLikes(data, res, count_m, session, accountId, dir, username)
+                              setCookieLikes(data, res, count_m, session, accountId, dir, username)
                           }else {
                             console.log('waiting '+ count_promise_true+' from '+count_promise);
                           }
