@@ -2,6 +2,7 @@ var express = require('express');
 var request = require('request');
 var bodyParser = require('body-parser');
 var firebase = require('firebase');
+var Client = require('instagram-private-api').V1;
 var db = require('../db');
 var fs = require('fs');
 var database = firebase.database();
@@ -27,7 +28,7 @@ function getUserInfo(req, res) {
   var login = req.body.login;
   var pass = req.body.pass;
 
-  var device = new Client.Device('someuser');
+  var device = new Client.Device(login);
   var storage = new Client.CookieFileStorage(__dirname + "/cookies/"+login+".json");
   Client.Session.create(device, storage, login, pass)
   .then(function(session) {
