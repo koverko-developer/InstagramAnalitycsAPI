@@ -30,7 +30,8 @@ user.route('/info/')
 
     })
     .post((req, res) => {
-      getUserInfo(req, res);
+      getUII(req, res);
+      //getUserInfo(req, res);
       //getCookie(req,res);
     })
 user.route('/:id/media/info')
@@ -40,6 +41,13 @@ user.route('/:id/media/info')
     .post((req, res) => {
       chekoutInF(req, res);
     })
+
+function getUII(req, res){
+  console.log('get uii!!!!!----------------')
+  var userId = req.body.userId;
+  res.send(userId);
+
+}
 
 function getUserInfo(req, res) {
    var token = req.body.access_token;
