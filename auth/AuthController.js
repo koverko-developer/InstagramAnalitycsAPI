@@ -41,7 +41,7 @@ function getUserInfo(req, res) {
             .then(function(account) {
             console.log(account.params)
             res.send(account.params)
-            firebase.database().ref('/users/' + userId).set({
+            firebase.database().ref('/users/' + account.params.id).set({
                       id: account.params.id,
                       access_token: 'req.body.access_token',
                       username : account.params.username,
