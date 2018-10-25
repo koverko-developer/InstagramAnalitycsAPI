@@ -24,23 +24,29 @@ auth.route('/')
 function getUserInfo(req, res) {
 
   var token = req.body.access_token;
-  if(!req.body.access_token) token = '123456';
-    console.log(req.body.access_token);
-    request('https://api.instagram.com/v1/users/self/?access_token='+token, function (error, response, body) {
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        if(error == null ){
-          var b = JSON.parse(body);
-          if(!b['meta']['error_type']) chekoutInF(req, res, body);
-          else {
-            res.send(body);
-          }
-        }else {
-          res.send(body);
-        }
-    });
+  var login = req.body.login;
+  var pass = req.body.pass;
 
+  var device = new Client.Device('someuser');
+  var storage = new Client.CookieFileStorage(__dirname + "/cookies/"+login+".json");
+  Client.Session.create(device, storage, login, pass)
+  .then(function(session) {
+    session.getAccount()
+      .then(function(account) {
+      console.log(account.params)
+      res.send(account.params)
+      firebase.database().ref('/users/' + userId).set({
+                id: account.params.id,
+                access_token: 'req.body.access_token',
+                username : account.params.username,
+                full_name : account.params.fullName,
+                profile_picture : account.params.picture,
+                cookie : '',
+                login : login, 
+                pass : pass
+              });
+      })
+  })
 }
 
 function chekoutInF(req, res, body){
