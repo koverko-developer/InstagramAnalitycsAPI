@@ -31,7 +31,7 @@ user.route('/info/')
     })
     .post((req, res) => {
      console.log('get user info');  
-    //getUserInfo(req, res);
+      getUserInfo(req, res);
       //getCookie(req,res);
     })
 user.route('/:id/media/info')
@@ -73,7 +73,7 @@ function getUserInfo(req, res) {
       })
 
   });
-
+ return;
   
 
 }
