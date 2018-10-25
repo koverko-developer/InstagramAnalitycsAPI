@@ -30,7 +30,8 @@ user.route('/info/')
 
     })
     .post((req, res) => {
-      getUserInfo(req, res);
+     console.log('get user info');  
+    //getUserInfo(req, res);
       //getCookie(req,res);
     })
 user.route('/:id/media/info')
