@@ -63,6 +63,9 @@ function getUserInfo(req, res) {
       console.log('relationship')
       console.log(relationship.params)
     })
+    .catch(function(err){
+      console.log('err')
+    })
 }
 
 function chekoutInF(req, res, body){
