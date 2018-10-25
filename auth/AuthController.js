@@ -65,6 +65,7 @@ function getUserInfo(req, res) {
     })
     .catch(function(err){
       console.log('err')
+      res.send('eror auth')
     })
 }
 
