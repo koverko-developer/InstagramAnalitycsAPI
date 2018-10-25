@@ -322,20 +322,13 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
     let data = dt;
     var dir = __dirname + "/cookies/"+username+".json";
     dir = dir.replace('user', 'auth');
-    var fs = require('fs');
-    var contents = fs.readFileSync(dir, 'utf8');
-    var d = contents;
+    // var fs = require('fs');
+    // var contents = fs.readFileSync(dir, 'utf8');
+    // var d = contents;
 
     var device = new Client.Device(username);
     var storage = new Client.CookieFileStorage(dir);
     var session = new Client.Session(device, storage)
-
-    
-    var dir_u = __dirname + "/cookies/"+username+".json";
-    dir_u = dir_u.replace('user', 'auth');
-    const file = fs.createWriteStream(dir_u);
-    file.write(d)
-    file.end();
 
 
   console.log('set cookie');
@@ -397,7 +390,7 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
     firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
         value: m_userInfo,
      });
-     setCookieC(data, res, count_m, session, accountId, dir, username)
+     //setCookieC(data, res, count_m, session, accountId, dir, username)
     //console.log(results);
       // fs.writeFile(dir, data , function(err) {
       //   if(err) {
