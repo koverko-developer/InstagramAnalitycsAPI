@@ -314,7 +314,7 @@ function getCookie(req,res, username, accountId) {
 }
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
 
-    var userId = req.body.userId;
+    var userId = accountId;
     firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
     var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
