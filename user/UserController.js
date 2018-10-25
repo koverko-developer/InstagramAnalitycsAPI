@@ -48,7 +48,7 @@ function getUII(req, res){
     firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
     var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-    var data = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+    var data = (snapshot.val() && snapshot.val().id) || 'Anonymous';
     var dir = __dirname + "/cookies/"+'koverko_dev1'+".json";
     dir = dir.replace('user', 'auth');
     var fs = require('fs');
