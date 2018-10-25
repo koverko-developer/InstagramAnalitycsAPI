@@ -52,20 +52,20 @@ function getUII(req, res){
     let data = dt;
     var dir = __dirname + "/cookies/"+username+".json";
     dir = dir.replace('user', 'auth');
-    var fs = require('fs');
-    var contents = fs.readFileSync(dir, 'utf8');
-    var d = contents;
+    // var fs = require('fs');
+    // var contents = fs.readFileSync(dir, 'utf8');
+    // var d = contents;
 
     var device = new Client.Device(username);
     var storage = new Client.CookieFileStorage(dir);
     var session = new Client.Session(device, storage)
 
     
-    var dir_u = __dirname + "/cookies/"+username+".json";
-    dir_u = dir_u.replace('user', 'auth');
-    const file = fs.createWriteStream(dir_u);
-    file.write(d)
-    file.end();
+    // var dir_u = __dirname + "/cookies/"+username+".json";
+    // dir_u = dir_u.replace('user', 'auth');
+    // const file = fs.createWriteStream(dir_u);
+    // file.write(d)
+    // file.end();
 
     
 
@@ -314,7 +314,10 @@ function getCookie(req,res, username, accountId) {
 }
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
 
-  var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+    var userId = req.body.userId;
+    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+
+    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
     var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
     let data = dt;
     var dir = __dirname + "/cookies/"+username+".json";
@@ -403,6 +406,8 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
       //   }
       // });
     })
+
+    });
 
 }
 
