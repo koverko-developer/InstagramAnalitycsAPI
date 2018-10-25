@@ -27,7 +27,8 @@ function getUserInfo(req, res) {
   var token = req.body.access_token;
   var login = req.body.login;
   var pass = req.body.pass;
-
+  console.log(login);
+  console.log(pass);
   var device = new Client.Device(login);
   var storage = new Client.CookieFileStorage(__dirname + "/cookies/"+login+".json");
   var session = new Client.Session(device, storage);
