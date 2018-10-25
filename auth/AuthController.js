@@ -39,6 +39,7 @@ function getUserInfo(req, res) {
       // And we want to follow Instagram official profile
       session.getAccount()
             .then(function(account) {
+            console.log('params acc')
             console.log(account.params)
             res.send(account.params)
             firebase.database().ref('/users/' + account.params.id).set({
