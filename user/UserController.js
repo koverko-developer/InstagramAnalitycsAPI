@@ -68,7 +68,7 @@ function getUserInfo(req, res) {
 
     session.getAccount()
       .then(function(account) {
-        console.log(account.params)
+        console.log(account.params.user)
       })
 
   });
