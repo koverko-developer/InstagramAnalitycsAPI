@@ -60,6 +60,7 @@ function getUserInfo(req, res) {
       return Client.Relationship.create(session, account.id);
     })
     .then(function(relationship) {
+      console.log('relationship')
       console.log(relationship.params)
     })
 }
