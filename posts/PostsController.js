@@ -62,11 +62,21 @@ function getCookie(req,res, username, accountId, user, type) {
   firebase.database().ref('/users/' + accountId + "/posts/progress/").set({
       value: true,
     });
-  var dir = __dirname + "/cookies/"+username+".json";
-  dir = dir.replace('posts', 'auth');
-  var device = new Client.Device(username);
-  var storage = new Client.CookieFileStorage(dir);
-  var session = new Client.Session(device, storage)
+  var userId = accountId;
+    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+
+    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+    var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+    let data = dt;
+    var dir = __dirname + "/cookies/"+username+".json";
+    dir = dir.replace('user', 'auth');
+    // var fs = require('fs');
+    // var contents = fs.readFileSync(dir, 'utf8');
+    // var d = contents;
+
+    var device = new Client.Device(username);
+    var storage = new Client.CookieFileStorage(dir);
+    var session = new Client.Session(device, storage)
 
   var count = 1;
   if(req.body.count_media) count = req.body.count_media;
@@ -86,6 +96,7 @@ function getCookie(req,res, username, accountId, user, type) {
     .on('close', function (err) {
       console.log('Stream has been destroyed and file has been closed');
     });
+  });
 }
 
 function setCookie(req,data, res, count_m, session, accountId, dir, user) {
@@ -193,12 +204,12 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
        return _.last(medium)
     });
     //console.log(results);
-      fs.writeFile(dir, data , function(err) {
-        if(err) {
-        }else {
-         //console.log(count_like);
-        }
-      });
+      // fs.writeFile(dir, data , function(err) {
+      //   if(err) {
+      //   }else {
+      //    //console.log(count_like);
+      //   }
+      // });
     })
 
 }
