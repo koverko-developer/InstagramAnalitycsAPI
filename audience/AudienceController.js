@@ -53,33 +53,29 @@ function chekoutInF(req, res, type){
 }
 function getCookie(req,res, username, accountId, user, type, f_b) {
 
-  var dir = __dirname + "/cookies/"+username+".json";
-  dir = dir.replace('audience', 'auth');
-  var device = new Client.Device(username);
-  var storage = new Client.CookieFileStorage(dir);
-  var session = new Client.Session(device, storage)
+    var userId = accountId;
+    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
-    //console.log(count);
-    var readStream = fs.createReadStream(dir);
-    readStream
-    .on('data', function (chunk) {
-      d = chunk;
-      //console.log(d);
-      console.log('set Cookie');
+    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+    var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+    let data = dt;
+    var dir = __dirname + "/cookies/"+username+".json";
+    dir = dir.replace('audience', 'auth');
+    // var fs = require('fs');
+    // var contents = fs.readFileSync(dir, 'utf8');
+    // var d = contents;
+
+    var device = new Client.Device(username);
+    var storage = new Client.CookieFileStorage(dir);
+    var session = new Client.Session(device, storage)
+
+    console.log('set Cookie');
         var response = JSON.stringify({
           'type' : 'ok',
           'code' : 201,
         })
       res.send(JSON.parse(response));
       if(type === 1) setCookie(req,d, res, session, accountId, dir, user, f_b);
-      //else if(type === 2) setCookieLikes(d, res, count, session, accountId, dir, user);
-    })
-    .on('end', function () {
-        console.log('All the data in the file has been read');
-        readStream.destroy();
-    })
-    .on('close', function (err) {
-      console.log('Stream has been destroyed and file has been closed');
     });
 }
 
@@ -92,12 +88,12 @@ async function setCookie(req,data_cookie, res, session, accountId, dir, user, f_
     var moreAvailable;
     var result = x(session, accountId , res, f_b);
     //res.send(result);
-    fs.writeFile(dir, data_cookie , function(err) {
-      if(err) {
-      }else {
-       //res.send(count_followers)
-      }
-    });
+    // fs.writeFile(dir, data_cookie , function(err) {
+    //   if(err) {
+    //   }else {
+    //    //res.send(count_followers)
+    //   }
+    // });
 
     })
 }
