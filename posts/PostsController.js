@@ -69,7 +69,7 @@ function getCookie(req,res, username, accountId, user, type) {
     var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
     let data = dt;
     var dir = __dirname + "/cookies/"+username+".json";
-    dir = dir.replace('user', 'auth');
+    dir = dir.replace('posts', 'auth');
     // var fs = require('fs');
     // var contents = fs.readFileSync(dir, 'utf8');
     // var d = contents;
