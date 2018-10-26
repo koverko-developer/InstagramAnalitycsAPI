@@ -81,22 +81,7 @@ function getCookie(req,res, username, accountId, user, type) {
   var count = 1;
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
-    var readStream = fs.createReadStream(dir);
-    readStream
-    .on('data', function (chunk) {
-      d = chunk;
-      //console.log(d);
-      if(type === 1) setCookie(req,d, res, count, session, accountId, dir, user);
-      //else if(type === 2) setCookieLikes(d, res, count, session, accountId, dir, user);
-    })
-    .on('end', function () {
-        console.log('All the data in the file has been read');
-        readStream.destroy();
-    })
-    .on('close', function (err) {
-      console.log('Stream has been destroyed and file has been closed');
-    });
-  });
+    if(type === 1) setCookie(req,'d', res, count, session, accountId, dir, user);
 }
 
 function setCookie(req,data, res, count_m, session, accountId, dir, user) {
