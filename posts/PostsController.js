@@ -82,6 +82,7 @@ function getCookie(req,res, username, accountId, user, type) {
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
     if(type === 1) setCookie(req,'d', res, count, session, accountId, dir, user);
+    });
 }
 
 function setCookie(req,data, res, count_m, session, accountId, dir, user) {
