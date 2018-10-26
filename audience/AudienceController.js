@@ -75,7 +75,7 @@ function getCookie(req,res, username, accountId, user, type, f_b) {
           'code' : 201,
         })
       res.send(JSON.parse(response));
-      if(type === 1) setCookie(req,d, res, session, accountId, dir, user, f_b);
+      if(type === 1) setCookie(req,'d', res, session, accountId, dir, user, f_b);
     });
 }
 
