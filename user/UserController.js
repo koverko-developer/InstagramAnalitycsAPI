@@ -60,14 +60,14 @@ function getUII(req, res){
     var storage = new Client.CookieFileStorage(dir);
     var session = new Client.Session(device, storage)
 
-    
+
     // var dir_u = __dirname + "/cookies/"+username+".json";
     // dir_u = dir_u.replace('user', 'auth');
     // const file = fs.createWriteStream(dir_u);
     // file.write(d)
     // file.end();
 
-    
+
 
     session.getAccount()
       .then(function(account) {
@@ -690,12 +690,12 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
          return _.last(medium)
       });
       //console.log(results);
-        fs.writeFile(dir, data , function(err) {
-          if(err) {
-          }else {
-
-          }
-        });
+        // fs.writeFile(dir, data , function(err) {
+        //   if(err) {
+        //   }else {
+        //
+        //   }
+        // });
       })
       });
 
