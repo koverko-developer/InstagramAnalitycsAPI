@@ -57,33 +57,20 @@ function getCookie(stalkers, req,res, username, accountId, user) {
   var count = 1;
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
-    var readStream = fs.createReadStream(dir);
-    readStream
-    .on('data', function (chunk) {
-      d = chunk;
-      //console.log(d);
-      console.log('set Cookie');
-        var response = JSON.stringify({
-          'type' : 'ok',
-          'code' : 201,
-        })
-      res.send(JSON.parse(response));
+    console.log('set Cookie');
+      var response = JSON.stringify({
+        'type' : 'ok',
+        'code' : 201,
+      })
+    res.send(JSON.parse(response));
 
-      firebase.database().ref('/users/' + accountId + "/stalkers/progress/").set({
-          value: true,
-        });
+    firebase.database().ref('/users/' + accountId + "/stalkers/progress/").set({
+        value: true,
+      });
 
 
-      if(stalkers === 'Anonymous')x(d, res, count, session, accountId, dir, user);
-      else setCookieLikes(d, res, count, session, accountId, dir, user);
-    })
-    .on('end', function () {
-        console.log('All the data in the file has been read');
-        readStream.destroy();
-    })
-    .on('close', function (err) {
-      console.log('Stream has been destroyed and file has been closed');
-    });
+    if(stalkers === 'Anonymous')x(d, res, count, session, accountId, dir, user);
+    else setCookieLikes(d, res, count, session, accountId, dir, user);
 }
 function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 
@@ -179,12 +166,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                   console.log(err);
           });
     });
-    fs.writeFile(dir, data , function(err) {
-         if(err) {
-         }else {
 
-         }
-       });
 
   }
 function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
@@ -211,8 +193,11 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
       }
 
       if(b){
-        if(rand_coll == rand_coll_true) {
+        if(rand_coll == rand_coll_true)
 
+          firebase.database().ref('/users/' + accountId + "/stalkers/users/").set({
+              value: null,
+            });
 
           for(var j in sort_stalkers_id){
             console.log(sort_stalkers_uname[j] + ' --- '+ sort_stalkers_col_like[j] + '-----' + sort_stalkers_col_comments[j]);
