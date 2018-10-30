@@ -70,7 +70,7 @@ function getCookie(stalkers, req,res, username, accountId, user) {
 
 
     if(stalkers === 'Anonymous')x(d, res, count, session, accountId, dir, user);
-    else setCookieLikes(d, res, count, session, accountId, dir, user);
+    else setCookieLikes('d', res, count, session, accountId, dir, user);
 }
 function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 
