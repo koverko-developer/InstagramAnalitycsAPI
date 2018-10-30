@@ -193,8 +193,7 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
       }
 
       if(b){
-        if(rand_coll == rand_coll_true)
-
+        if(rand_coll == rand_coll_true) {
           firebase.database().ref('/users/' + accountId + "/stalkers/users/").set({
               value: null,
             });
