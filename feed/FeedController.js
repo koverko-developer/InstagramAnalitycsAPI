@@ -33,7 +33,8 @@ feed.route('/:id')
     })
 
 function chekoutInF(req, res, type){
-    let userId = req.params.id;
+    //let userId = req.params.id;
+    let userId = 313212819;
     console.log(userId);
     //console.log(error);
     firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
