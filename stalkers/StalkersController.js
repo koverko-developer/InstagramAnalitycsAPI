@@ -91,7 +91,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
      console.log('stalkesr true');
 
       var dir = __dirname + "/cookies/"+user+".json";
-      dir = dir.replace('feed', 'auth');
+      dir = dir.replace('stalkers', 'auth');
       var device = new Client.Device(user);
       var storage = new Client.CookieFileStorage(dir);
       var session = new Client.Session(device, storage)      
@@ -109,7 +109,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
              for(var k in media){
 	       
                var dir = __dirname + "/cookies/"+user+".json";
-               dir = dir.replace('feed', 'auth');
+               dir = dir.replace('stalkers', 'auth');
                var device = new Client.Device(user);
                var storage = new Client.CookieFileStorage(dir);
                var session = new Client.Session(device, storage) 
