@@ -21,14 +21,14 @@ method.getuname = function() {
   return this.uname;
 }
 
-method.setcount_comments  = function(_code) {
+method.setcol_comments  = function(_code) {
   this.col_comments = this.count_comments + _code;
 }
 method.getcol_comments = function() {
   return this.col_comments;
 }
 
-method.setcount_likes  = function(_code) {
+method.setcol_like  = function(_code) {
   this.col_like = this.count_likes + _code;
 }
 method.getcol_like = function() {
