@@ -1,11 +1,11 @@
 var method = Stalker.prototype;
 
 function Stalker(_username, _fullname, _picture, _id) {
-  this.username = _username;
-  this.count_comments = 0;
-  this.count_likes = 0;
+  this.uname = _username;
+  this.col_comments = 0;
+  this.col_like = 0;
   this.fullname = _fullname;
-  this.profile_picture = _picture;
+  this.picture = _picture;
   this.id = _id;
 }
 method.setid  = function(_code) {
@@ -15,24 +15,24 @@ method.getid = function() {
   return this.id;
 }
 method.setusername  = function(_code) {
-  this.username = _code;
+  this.uname = _code;
 }
-method.getusername = function() {
-  return this.username;
+method.getuname = function() {
+  return this.uname;
 }
 
 method.setcount_comments  = function(_code) {
-  this.count_comments = this.count_comments + _code;
+  this.col_comments = this.count_comments + _code;
 }
-method.getcount_comments = function() {
-  return this.count_comments;
+method.getcol_comments = function() {
+  return this.col_comments;
 }
 
 method.setcount_likes  = function(_code) {
-  this.count_likes = this.count_likes + _code;
+  this.col_like = this.count_likes + _code;
 }
-method.getcount_likes = function() {
-  return this.count_likes;
+method.getcol_like = function() {
+  return this.col_like;
 }
 
 method.setfullname  = function(_code) {
@@ -43,10 +43,10 @@ method.getfullname = function() {
 }
 
 method.setprofile_picture  = function(_code) {
-  this.profile_picture = _code;
+  this.picture = _code;
 }
-method.getprofile_picture = function() {
-  return this.profile_picture;
+method.getpicture = function() {
+  return this.picture;
 }
 
 
