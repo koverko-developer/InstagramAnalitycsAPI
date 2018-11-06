@@ -48,30 +48,33 @@ function getUserInfo(req, res) {
 
   const file = fs.createWriteStream(__dirname + "/cookies/"+userName+".json");
   file.write(d)
-  file.end(function () { console.log('done'); });
-  
-  
-  var device = new Client.Device(userName);
+  file.end(function () {
+	var device = new Client.Device(userName);
   
   var storage = new Client.CookieFileStorage(__dirname + "/cookies/"+userName+".json");
   var session = new Client.Session(device, storage);
 
-
-  session.getAccount()
-            .then(function(account) {
-            console.log('params acc')
-            console.log(account.params)
-            res.send(account.params)
-            firebase.database().ref('/users/' + account.params.id).set({
-                      id: account.params.id,
-                      access_token: 'req.body.access_token',
-                      username : account.params.username,
-                      full_name : account.params.fullName,
-                      profile_picture : account.params.picture,
-                      cookie : '',
-                      //login : login, 
-                      //pass : pass
-                    });
-            })
+          console.log('done');
+	  session.getAccount()
+		    .then(function(account) {
+		    console.log('params acc')
+		    console.log(account.params)
+		    res.send(account.params)
+		    firebase.database().ref('/users/' + account.params.id).set({
+		              id: account.params.id,
+		              access_token: 'req.body.access_token',
+		              username : account.params.username,
+		              full_name : account.params.fullName,
+		              profile_picture : account.params.picture,
+		              cookie : '',
+		              //login : login, 
+		              //pass : pass
+		            });
+		    })	
+	 
+    });
+  
+  
+  
 }
 module.exports = auth;
