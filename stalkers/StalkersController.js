@@ -103,7 +103,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
              var rand_coll_true = 0;
              for(var k in media){
 
-               console.log(media[k]['id']);
+               //console.log(media[k]['id']);
                Client.Media.likers(session, media[k]['id'])
                     .then(function (likes) {
                     rand_coll_true += 1;
@@ -124,7 +124,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                         console.log(err);
                     });
 
-		    console.log('feed media comments');
+		    //console.log('feed media comments');
                     const feed = new Client.Feed.MediaComments(session, media[k]['id']);
                 		let originalCursor = feed.getCursor();
                 		feed.get().then(function(comments) {
@@ -132,10 +132,10 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                         var count = 0;
                       _.each(comments, function(comment)  {
                                 count++;
-                                console.log('this is comment');
-                                console.log(comment['params']['account']['username']);
-                                console.log(comment['params']['account']['id']);
-                                console.log('---------------');
+                                //console.log('this is comment');
+                                //console.log(comment['params']['account']['username']);
+                                //console.log(comment['params']['account']['id']);
+                                //console.log('---------------');
                                 var uname = comment['params']['account']['username'];
                                 var picture = comment['params']['account']['picture'];
                                 var fullName = comment['params']['account']['fullName'];
@@ -194,6 +194,7 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
       }
 
       if(b){
+	console.log('b == true');
         if(rand_coll == rand_coll_true) {
           firebase.database().ref('/users/' + accountId + "/stalkers/users/").set({
               value: null,
@@ -217,6 +218,8 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
             list_st.push(stalker);
 		
           }
+	  console.log('arrr');
+	  console.log(list_st);
 	  firebase.database().ref('/users/' + accountId + "/stalkers/users/").set({
 		value : list_st,
 		});
@@ -228,6 +231,7 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
       }
     }
     catch(err){
+      console.log('error in checkcInArr');
       console.log(err);
     }
 
