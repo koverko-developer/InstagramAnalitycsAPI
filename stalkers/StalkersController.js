@@ -90,6 +90,11 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 
      console.log('stalkesr true');
 
+      var dir = __dirname + "/cookies/"+username+".json";
+      dir = dir.replace('feed', 'auth');
+      var device = new Client.Device(username);
+      var storage = new Client.CookieFileStorage(dir);
+      var session = new Client.Session(device, storage)      
 
       var feed = new Client.Feed.UserMedia(session, accountId);
       Promise.mapSeries(_.range(count_m), function() {
@@ -102,7 +107,13 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
              var rand_coll = media.length *2;
              var rand_coll_true = 0;
              for(var k in media){
-
+	       
+               var dir = __dirname + "/cookies/"+username+".json";
+               dir = dir.replace('feed', 'auth');
+               var device = new Client.Device(username);
+               var storage = new Client.CookieFileStorage(dir);
+               var session = new Client.Session(device, storage) 
+	
                //console.log(media[k]['id']);
                Client.Media.likers(session, media[k]['id'])
                     .then(function (likes) {
