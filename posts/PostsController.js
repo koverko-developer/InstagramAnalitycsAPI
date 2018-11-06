@@ -81,7 +81,7 @@ function getCookie(req,res, username, accountId, user, type) {
   var count = 1;
   if(req.body.count_media) count = req.body.count_media;
     console.log(count);
-    if(type === 1) setCookie(req,d, res, count, session, accountId, dir, user);
+    if(type === 1) setCookie(req,'d', res, count, session, accountId, dir, user);
     });
 }
 
@@ -190,12 +190,12 @@ function setCookie(req,data, res, count_m, session, accountId, dir, user) {
        return _.last(medium)
     });
     console.log(results);
-      fs.writeFile(dir, data , function(err) {
-        if(err) {
-        }else {
-         //console.log(count_like);
-        }
-      });
+//       fs.writeFile(dir, data , function(err) {
+//         if(err) {
+//         }else {
+//          //console.log(count_like);
+//         }
+//       });
     })
 
 }
