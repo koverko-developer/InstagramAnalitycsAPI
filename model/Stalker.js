@@ -22,14 +22,14 @@ method.getuname = function() {
 }
 
 method.setcol_comments  = function(_code) {
-  this.col_comments = this.count_comments + _code;
+  this.col_comments = this.col_comments + _code;
 }
 method.getcol_comments = function() {
   return this.col_comments;
 }
 
 method.setcol_like  = function(_code) {
-  this.col_like = this.count_likes + _code;
+  this.col_like = this.col_like + _code;
 }
 method.getcol_like = function() {
   return this.col_like;
