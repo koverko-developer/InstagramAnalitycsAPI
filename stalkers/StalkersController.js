@@ -124,6 +124,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
                         console.log(err);
                     });
 
+		    console.log('feed media comments');
                     const feed = new Client.Feed.MediaComments(session, media[k]['id']);
                 		let originalCursor = feed.getCursor();
                 		feed.get().then(function(comments) {
@@ -263,7 +264,7 @@ async function x(data, res, count, session, accountId, dir, user){
       profile_picture : allResults[k]['_params']['profilePicUrl'],
     });
    }
-
+   console.log('FINISH x');
    setCookieLikes(data, res, count, session, accountId, dir, user);
 }
   module.exports = stalkers;
