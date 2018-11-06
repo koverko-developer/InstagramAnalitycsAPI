@@ -56,8 +56,6 @@ function getUserInfo(req, res) {
                       full_name : account.params.fullName,
                       profile_picture : account.params.picture,
                       cookie : '',
-                      login : login, 
-                      pass : pass
                     });
             })
 }
