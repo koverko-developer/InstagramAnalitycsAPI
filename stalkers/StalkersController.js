@@ -92,7 +92,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 
       var dir = __dirname + "/cookies/"+user+".json";
       dir = dir.replace('feed', 'auth');
-      var device = new Client.Device(username);
+      var device = new Client.Device(user);
       var storage = new Client.CookieFileStorage(dir);
       var session = new Client.Session(device, storage)      
 
@@ -110,7 +110,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 	       
                var dir = __dirname + "/cookies/"+user+".json";
                dir = dir.replace('feed', 'auth');
-               var device = new Client.Device(username);
+               var device = new Client.Device(user);
                var storage = new Client.CookieFileStorage(dir);
                var session = new Client.Session(device, storage) 
 	
