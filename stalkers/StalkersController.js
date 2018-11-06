@@ -253,17 +253,23 @@ async function x(data, res, count, session, accountId, dir, user){
   // });
   console.log('stalkesr false');
   //res.send('end');
-  var feed = new Client.Feed.AccountFollowers(session, accountId);
-  const allResults = await feed.all();
+    try{
+	var feed = new Client.Feed.AccountFollowers(session, accountId);
+	  const allResults = await feed.all();
 
-  for(var k in allResults){
-  firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
-      id: allResults[k]['_params']['id'],
-      username : allResults[k]['_params']['username'],
-      full_name : allResults[k]['_params']['fullName'],
-      profile_picture : allResults[k]['_params']['profilePicUrl'],
-    });
-   }
+	  for(var k in allResults){
+	  firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
+	      id: allResults[k]['_params']['id'],
+	      username : allResults[k]['_params']['username'],
+	      full_name : allResults[k]['_params']['fullName'],
+	      profile_picture : allResults[k]['_params']['profilePicUrl'],
+	    });
+	   }
+    }
+    catch(err){
+      console.log('error in X');
+      console.log(err);
+    }
    console.log('FINISH x');
    setCookieLikes(data, res, count, session, accountId, dir, user);
 }
