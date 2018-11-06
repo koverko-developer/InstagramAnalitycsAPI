@@ -224,8 +224,8 @@ function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
             });*/
 
 	    var stalker = new Stalker(sort_stalkers_uname[j], sort_stalkers_fullname[j], sort_stalkers_picture[j], sort_stalkers_id[j]);
-            stalker.setcount_comments(sort_stalkers_col_comments[j]);
-            stalker.setcount_likes(sort_stalkers_col_like[j]);
+            stalker.setcol_comments(sort_stalkers_col_comments[j]);
+            stalker.setcol_like(sort_stalkers_col_like[j]);
             list_st.push(stalker);
 		
           }
