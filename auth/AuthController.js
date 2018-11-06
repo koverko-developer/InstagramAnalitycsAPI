@@ -48,9 +48,11 @@ function getUserInfo(req, res) {
 
   const file = fs.createWriteStream(__dirname + "/cookies/"+userName+".json");
   file.write(d)
-  file.end();
-
-  var device = new Client.Device(login);
+  file.end(function () { console.log('done'); });
+  
+  
+  var device = new Client.Device(userName);
+  
   var storage = new Client.CookieFileStorage(__dirname + "/cookies/"+userName+".json");
   var session = new Client.Session(device, storage);
 
