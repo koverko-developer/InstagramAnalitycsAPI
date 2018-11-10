@@ -509,7 +509,7 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
                                   });
                                   //setCookieLikes(data, res, count_m, session, accountId, dir, username)
                               }else {
-                                console.log('waiting '+ count_promise_true+' from '+count_promise);
+                                //console.log('waiting '+ count_promise_true+' from '+count_promise);
                               }
 
                           })
@@ -587,7 +587,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
                 .then(function (likes) {
                     //console.log('get likes');
                     count_promise_true++;
-                    console.log(likes.length);
+                    //console.log(likes.length);
                     rand_coll+=likes.length;
                     for (var k in likes){
 
