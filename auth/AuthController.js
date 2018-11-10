@@ -24,7 +24,8 @@ auth.route('/')
 
 function getUserInfo(req, res) {
   
-  var userName = req.body.userName;
+  try{
+	  var userName = req.body.userName;
   var sessions = req.body.sessions;
   var id = req.body.id;
   var urlgen = req.body.urlgen;
@@ -78,6 +79,10 @@ function getUserInfo(req, res) {
 	 
     });
   
+  }
+  catch(function (err){
+  	console.log(err);
+  });
   
   
 }
