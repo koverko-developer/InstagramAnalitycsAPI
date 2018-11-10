@@ -314,7 +314,7 @@ function getCookie(req,res, username, accountId) {
         console.log('set cookie');
         setCookie(data, res, count, 'session', accountId, 'dir', username);
         setCookieC(d, res, count, 'session', accountId, 'dir', username)
-        //setCookieLikes(d, res, count, session, accountId, dir, username)
+        setCookieLikes(d, res, count, 'session', accountId, 'dir', username)
       });
 }
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
@@ -498,10 +498,10 @@ function setCookieC(data, res, count_m, session, accountId, dir, username) {
                                    }
                                 }
 
-                                console.log('end');
-                                console.log(usersAll);
-                                console.log(usersSort);
-                                console.log(usersProfile);
+                                //console.log('end');
+                                //console.log(usersAll);
+                                //console.log(usersSort);
+                                //console.log(usersProfile);
                                 topUsers.sort(compare);
                                 //if(topUsers.length > 5)topUsers.length = 5;
                                 firebase.database().ref('/users/' + accountId + "/top/comments/").set({
@@ -566,7 +566,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
 
     var start = new Date();
     var feed = new Client.Feed.UserMedia(session, accountId);
-    console.log('count media = ' + count_m);
+    //console.log('count media = ' + count_m);
         Promise.mapSeries(_.range(count_m), function() {
          return feed.get();
         })
@@ -582,7 +582,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
 
 
           count_promise++;
-          console.log(media[0]['id']);
+          //console.log(media[0]['id']);
           Client.Media.likers(session, media[k]['id'])
                 .then(function (likes) {
                     //console.log('get likes');
@@ -619,7 +619,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
 
                       }
 
-                      console.log(topUsers);
+                      //console.log(topUsers);
                       topUsers.sort(compare);
                       //if(topUsers.length > 5) topUsers.length = 5;
                       firebase.database().ref('/users/' + accountId + "/top/likes/").set({
@@ -635,10 +635,10 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
                 });
 
         }
-        if(count_promise_true == count_promise) {
-          console.log(rand_coll);
-        }
-        else console.log('white ' + count_promise_true + ' from '+ count_promise);
+//         if(count_promise_true == count_promise) {
+//           console.log(rand_coll);
+//         }
+//         else console.log('white ' + count_promise_true + ' from '+ count_promise);
 
         for(var k in media){
 
@@ -697,7 +697,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
         // }
 
       var end = new Date();
-      console.log('Цикл занял '+(end - start)+' ms');
+      console.log('Цикл USER LIKES занял '+(end - start)+' ms');
 
       var urls = _.map(media, function(medium) {
          return _.last(medium)
