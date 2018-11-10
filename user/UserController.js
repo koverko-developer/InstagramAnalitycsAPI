@@ -334,7 +334,7 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
   console.log('set cookie');
   var feed = new Client.Feed.UserMedia(session, accountId);
 
-  console.log('count media = ' + count_m);
+  //console.log('count media = ' + count_m);
   var m_userInfo = new UserInfo();
   var start = new Date();
   var count_like = 0;
@@ -349,9 +349,9 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
       .then(function(results) {
       // result should be Media[][]
       var media = _.flatten(results);
-      console.log(media[1]);
+      //console.log(media[1]);
       for(var k in media){
-        console.log(media[k]['id']);
+        //console.log(media[k]['id']);
         //console.log(k +"----like---"+ media[k]['_params']['topLikers']);
         //console.log(k +"----view---"+ media[k]['_params']['viewCount']);
         count_like += media[k]['_params']['likeCount'];
@@ -386,11 +386,11 @@ function setCookie(data, res, count_m, session1, accountId, dir, username) {
     firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
         value: false,
       });
-    console.log(m_userInfo);
+    //console.log(m_userInfo);
     firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
         value: m_userInfo,
      });
-     setCookieC(data, res, count_m, session, accountId, dir, username)
+     //setCookieC(data, res, count_m, session, accountId, dir, username)
     //console.log(results);
       // fs.writeFile(dir, data , function(err) {
       //   if(err) {
