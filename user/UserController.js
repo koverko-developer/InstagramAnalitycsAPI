@@ -43,7 +43,8 @@ user.route('/:id/media/info')
     })
 
 function getUII(req, res){
-  console.log('get uii!!!!!----------------')
+  try{
+      console.log('get uii!!!!!----------------')
   var userId = req.body.userId;
     firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
@@ -77,6 +78,10 @@ function getUII(req, res){
 
   });
 
+  }
+  catch(err){
+    console.log(err);
+  }
 }
 
 function getUserInfo(req, res) {
@@ -308,226 +313,234 @@ function getCookie(req,res, username, accountId) {
       if(req.body.count_media) count = req.body.count_media;
         console.log('set cookie');
         setCookie(data, res, count, 'session', accountId, 'dir', username);
-        //setCookieC(d, res, count, session, accountId, dir, username)
+        setCookieC(d, res, count, 'session', accountId, 'dir', username)
         //setCookieLikes(d, res, count, session, accountId, dir, username)
       });
 }
 function setCookie(data, res, count_m, session1, accountId, dir, username) {
+ try{
+        var userId = accountId;
+        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
-    var userId = accountId;
-    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+        var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+        let data = dt;
+        var dir = __dirname + "/cookies/"+username+".json";
+        dir = dir.replace('user', 'auth');
+        // var fs = require('fs');
+        // var contents = fs.readFileSync(dir, 'utf8');
+        // var d = contents;
 
-    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-    var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
-    let data = dt;
-    var dir = __dirname + "/cookies/"+username+".json";
-    dir = dir.replace('user', 'auth');
-    // var fs = require('fs');
-    // var contents = fs.readFileSync(dir, 'utf8');
-    // var d = contents;
-
-    var device = new Client.Device(username);
-    var storage = new Client.CookieFileStorage(dir);
-    var session = new Client.Session(device, storage)
+        var device = new Client.Device(username);
+        var storage = new Client.CookieFileStorage(dir);
+        var session = new Client.Session(device, storage)
 
 
-  console.log('set cookie');
-  var feed = new Client.Feed.UserMedia(session, accountId);
+      console.log('set cookie');
+      var feed = new Client.Feed.UserMedia(session, accountId);
 
-  //console.log('count media = ' + count_m);
-  var m_userInfo = new UserInfo();
-  var start = new Date();
-  var count_like = 0;
-  var count_view = 0;
-  var count_comments = 0;
-  var count_photo = 0;
-  var count_video = 0;
-  var count_carousel = 0;
-      Promise.mapSeries(_.range(count_m), function() {
-       return feed.get();
-      })
-      .then(function(results) {
-      // result should be Media[][]
-      var media = _.flatten(results);
-      //console.log(media[1]);
-      for(var k in media){
-        //console.log(media[k]['id']);
-        //console.log(k +"----like---"+ media[k]['_params']['topLikers']);
-        //console.log(k +"----view---"+ media[k]['_params']['viewCount']);
-        count_like += media[k]['_params']['likeCount'];
-        count_comments += media[k]['_params']['commentCount'];
-        if(media[k]['_params']['viewCount']) count_view += media[k]['_params']['viewCount'];
-        if(media[k]['_params']['mediaType'] === 2) count_video++;
-        else if(media[k]['_params']['mediaType'] === 1) count_photo++;
-        else if(media[k]['_params']['mediaType'] === 8) count_carousel++;
+      //console.log('count media = ' + count_m);
+      var m_userInfo = new UserInfo();
+      var start = new Date();
+      var count_like = 0;
+      var count_view = 0;
+      var count_comments = 0;
+      var count_photo = 0;
+      var count_video = 0;
+      var count_carousel = 0;
+          Promise.mapSeries(_.range(count_m), function() {
+           return feed.get();
+          })
+          .then(function(results) {
+          // result should be Media[][]
+          var media = _.flatten(results);
+          //console.log(media[1]);
+          for(var k in media){
+            //console.log(media[k]['id']);
+            //console.log(k +"----like---"+ media[k]['_params']['topLikers']);
+            //console.log(k +"----view---"+ media[k]['_params']['viewCount']);
+            count_like += media[k]['_params']['likeCount'];
+            count_comments += media[k]['_params']['commentCount'];
+            if(media[k]['_params']['viewCount']) count_view += media[k]['_params']['viewCount'];
+            if(media[k]['_params']['mediaType'] === 2) count_video++;
+            else if(media[k]['_params']['mediaType'] === 1) count_photo++;
+            else if(media[k]['_params']['mediaType'] === 8) count_carousel++;
 
-        // const feed = new Client.Feed.MediaComments(session, media[k]['id']);
-        //
-      	// 	let originalCursor = feed.getCursor();
-      	// 	feed.get().then(function(comments) {
-      	// 		//console.log(comments);
-        //     _.each(comments, function(comment) {
-        //               console.log(comment);
-        //           })
-        //           //console.log('more available ' + feed.moreAvailable);
-        //       });
-      }
-
-    m_userInfo.setcount_carousel(count_carousel);
-    m_userInfo.setcount_photo(count_photo);
-    m_userInfo.setcount_video(count_video);
-    m_userInfo.setcount_view(count_view);
-    m_userInfo.setcount_comments(count_comments);
-    m_userInfo.setcount_like(count_like);
-
-    var end = new Date();
-    console.log('Цикл занял '+(end - start)+' ms');
-    //res.send(m_userInfo);
-    firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
-        value: false,
-      });
-    //console.log(m_userInfo);
-    firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
-        value: m_userInfo,
-     });
-     //setCookieC(data, res, count_m, session, accountId, dir, username)
-    //console.log(results);
-      // fs.writeFile(dir, data , function(err) {
-      //   if(err) {
-      //   }else {
-      //    console.log('write data users');
-      //   }
-      // });
-    })
-
-    });
-
-}
-
-function setCookieC(data, res, count_m, session, accountId, dir, username) {
-
-    var userId = accountId;
-    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
-
-    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-    var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
-    let data = dt;
-    var dir = __dirname + "/cookies/"+username+".json";
-    dir = dir.replace('user', 'auth');
-    // var fs = require('fs');
-    // var contents = fs.readFileSync(dir, 'utf8');
-    // var d = contents;
-
-    var device = new Client.Device(username);
-    var storage = new Client.CookieFileStorage(dir);
-    var session = new Client.Session(device, storage)
-
-    var topUsers = [];
-    var usersAll = []
-    var usersSort = []
-    var usersProfile = []
-
-    var start = new Date();
-    var feed = new Client.Feed.UserMedia(session, accountId);
-    console.log('count media = ' + count_m);
-        Promise.mapSeries(_.range(count_m), function() {
-         return feed.get();
-        })
-        .then(function(results) {
-        // result should be Media[][]
-        var media = _.flatten(results);
-        //console.log(media[1]);
-        var count_promise = 0;
-        var count_promise_true = 0;
-        for(var k in media){
-          if(media[k]['_params']['commentCount'] > 0) {
-              console.log(count_promise + '  +=  ' + media[k]['_params']['commentCount']);
-              count_promise += 1;
-              const feed = new Client.Feed.MediaComments(session, media[k]['id']);
-          		let originalCursor = feed.getCursor();
-          		feed.get().then(function(comments) {
-                 count_promise_true ++;
-                _.each(comments, function(comment)  {
-                          console.log('this is comment');
-                          console.log(comment['params']['account']['username']);
-                          console.log(comment['params']['account']['id']);
-                          console.log('---------------');
-                          var uname = comment['params']['account']['username'];
-                          var picture = comment['params']['account']['picture'];
-
-                          if(uname != username){
-                            usersAll[usersAll.length] = uname;
-                            if(usersSort.indexOf(uname) === -1) {
-                              usersSort[usersSort.length] = uname;
-                              usersProfile[usersProfile.length] = picture;
-                            }
-                          }
-                          //console.log(uname + '--' + picture);
-                          var usertopssortnew = [];
-                          if(count_promise_true == count_promise) {
-
-                            for(var k in usersSort){
-                              var col = 0;
-                              for(var j in usersAll){
-                                if(usersAll[j] == usersSort[k]) {
-                                  col++;
-                                }
-                              }
-
-                              var usertop = new TopUser(usersSort[k], '', usersProfile[k]);
-                              usertop.setcount_comments(col);
-                              topUsers.push(usertop);
-                            }
-
-                            for(var i = 1; i < topUsers.length; i++){
-                               var a1 = topUsers[i].getusername();
-                               var a2 = topUsers[i-1].getusername();
-
-                               if(a1 == a2) {
-                                 console.log(a1 + '   ==   ' + a2);
-                                 topUsers.splice(i);
-                               }
-                            }
-
-                            console.log('end');
-                            console.log(usersAll);
-                            console.log(usersSort);
-                            console.log(usersProfile);
-                            topUsers.sort(compare);
-                            //if(topUsers.length > 5)topUsers.length = 5;
-                            firebase.database().ref('/users/' + accountId + "/top/comments/").set({
-                                value: topUsers,
-                              });
-                              setCookieLikes(data, res, count_m, session, accountId, dir, username)
-                          }else {
-                            console.log('waiting '+ count_promise_true+' from '+count_promise);
-                          }
-
-                      })
-                      //console.log('more available ' + feed.mor  eAvailable);
-                  }).catch(function(err) {
-                    console.error(err.message)}
-                  );
+            // const feed = new Client.Feed.MediaComments(session, media[k]['id']);
+            //
+            // 	let originalCursor = feed.getCursor();
+            // 	feed.get().then(function(comments) {
+            // 		//console.log(comments);
+            //     _.each(comments, function(comment) {
+            //               console.log(comment);
+            //           })
+            //           //console.log('more available ' + feed.moreAvailable);
+            //       });
           }
-        }
+
+        m_userInfo.setcount_carousel(count_carousel);
+        m_userInfo.setcount_photo(count_photo);
+        m_userInfo.setcount_video(count_video);
+        m_userInfo.setcount_view(count_view);
+        m_userInfo.setcount_comments(count_comments);
+        m_userInfo.setcount_like(count_like);
 
         var end = new Date();
-        console.log('Цикл занял '+(end - start)+' ms');
-
-        var urls = _.map(media, function(medium) {
-           return _.last(medium)
-        });
+        console.log('Цикл USER INFO занял '+(end - start)+' ms');
+        //res.send(m_userInfo);
+        firebase.database().ref('/users/' + accountId + "/info/media/progress/").set({
+            value: false,
+          });
+        //console.log(m_userInfo);
+        firebase.database().ref('/users/' + accountId + "/info/media/all/").set({
+            value: m_userInfo,
+         });
+         //setCookieC(data, res, count_m, session, accountId, dir, username)
         //console.log(results);
           // fs.writeFile(dir, data , function(err) {
           //   if(err) {
           //   }else {
-          //
+          //    console.log('write data users');
           //   }
           // });
         })
-      });
 
+        });
   }
+  catch(err){
+     console.log(err);
+  }
+
+}
+
+function setCookieC(data, res, count_m, session, accountId, dir, username) {
+  try{
+        var userId = accountId;
+        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+
+        var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+        let data = dt;
+        var dir = __dirname + "/cookies/"+username+".json";
+        dir = dir.replace('user', 'auth');
+        // var fs = require('fs');
+        // var contents = fs.readFileSync(dir, 'utf8');
+        // var d = contents;
+
+        var device = new Client.Device(username);
+        var storage = new Client.CookieFileStorage(dir);
+        var session = new Client.Session(device, storage)
+
+        var topUsers = [];
+        var usersAll = []
+        var usersSort = []
+        var usersProfile = []
+
+        var start = new Date();
+        var feed = new Client.Feed.UserMedia(session, accountId);
+        //console.log('count media = ' + count_m);
+            Promise.mapSeries(_.range(count_m), function() {
+             return feed.get();
+            })
+            .then(function(results) {
+            // result should be Media[][]
+            var media = _.flatten(results);
+            //console.log(media[1]);
+            var count_promise = 0;
+            var count_promise_true = 0;
+            for(var k in media){
+              if(media[k]['_params']['commentCount'] > 0) {
+                  //console.log(count_promise + '  +=  ' + media[k]['_params']['commentCount']);
+                  count_promise += 1;
+                  const feed = new Client.Feed.MediaComments(session, media[k]['id']);
+                    let originalCursor = feed.getCursor();
+                    feed.get().then(function(comments) {
+                     count_promise_true ++;
+                    _.each(comments, function(comment)  {
+                              //console.log('this is comment');
+                              //console.log(comment['params']['account']['username']);
+                              //console.log(comment['params']['account']['id']);
+                              //console.log('---------------');
+                              var uname = comment['params']['account']['username'];
+                              var picture = comment['params']['account']['picture'];
+
+                              if(uname != username){
+                                usersAll[usersAll.length] = uname;
+                                if(usersSort.indexOf(uname) === -1) {
+                                  usersSort[usersSort.length] = uname;
+                                  usersProfile[usersProfile.length] = picture;
+                                }
+                              }
+                              //console.log(uname + '--' + picture);
+                              var usertopssortnew = [];
+                              if(count_promise_true == count_promise) {
+
+                                for(var k in usersSort){
+                                  var col = 0;
+                                  for(var j in usersAll){
+                                    if(usersAll[j] == usersSort[k]) {
+                                      col++;
+                                    }
+                                  }
+
+                                  var usertop = new TopUser(usersSort[k], '', usersProfile[k]);
+                                  usertop.setcount_comments(col);
+                                  topUsers.push(usertop);
+                                }
+
+                                for(var i = 1; i < topUsers.length; i++){
+                                   var a1 = topUsers[i].getusername();
+                                   var a2 = topUsers[i-1].getusername();
+
+                                   if(a1 == a2) {
+                                     console.log(a1 + '   ==   ' + a2);
+                                     topUsers.splice(i);
+                                   }
+                                }
+
+                                console.log('end');
+                                console.log(usersAll);
+                                console.log(usersSort);
+                                console.log(usersProfile);
+                                topUsers.sort(compare);
+                                //if(topUsers.length > 5)topUsers.length = 5;
+                                firebase.database().ref('/users/' + accountId + "/top/comments/").set({
+                                    value: topUsers,
+                                  });
+                                  //setCookieLikes(data, res, count_m, session, accountId, dir, username)
+                              }else {
+                                console.log('waiting '+ count_promise_true+' from '+count_promise);
+                              }
+
+                          })
+                          //console.log('more available ' + feed.mor  eAvailable);
+                      }).catch(function(err) {
+                        console.error(err.message)}
+                      );
+              }
+            }
+
+            var end = new Date();
+            console.log('Цикл USER TOP COMMENTS занял '+(end - start)+' ms');
+
+            var urls = _.map(media, function(medium) {
+               return _.last(medium)
+            });
+            //console.log(results);
+              // fs.writeFile(dir, data , function(err) {
+              //   if(err) {
+              //   }else {
+              //
+              //   }
+              // });
+            })
+          });
+  }  
+  catch(err){
+     console.log(err);
+  }
+
+}
 function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
 //console.log();
     var userId = accountId;
