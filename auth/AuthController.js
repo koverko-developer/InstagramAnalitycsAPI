@@ -80,9 +80,9 @@ function getUserInfo(req, res) {
     });
   
   }
-  catch(function (err){
+  catch(err){
   	console.log(err);
-  });
+  };
   
   
 }
