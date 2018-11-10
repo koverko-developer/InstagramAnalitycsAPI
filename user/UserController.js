@@ -628,7 +628,7 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, username) {
                       // console.log(rand_coll);
                       // console.log(usersSort);
                     }
-                    else console.log('white ' + count_promise_true + ' from '+ count_promise);
+                    //else console.log('white ' + count_promise_true + ' from '+ count_promise);
                 })
                 .catch(function (err) {
                   console.log(err);
