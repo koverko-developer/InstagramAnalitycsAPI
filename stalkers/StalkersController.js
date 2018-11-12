@@ -74,7 +74,8 @@ function getCookie(stalkers, req,res, username, accountId, user) {
 }
 function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
 
-  var old_user_ids_fb = []
+    try{
+	    var old_user_ids_fb = []
   var stalkers_obj = [];
   var sort_stalkers_id = [];
   var sort_stalkers_uname = [];
@@ -179,6 +180,10 @@ function setCookieLikes(data, res, count_m, session, accountId, dir, user) {
           });
     });
 
+    }
+    catch(err){
+    	console.log(err);
+    }
 
   }
 function checkcInArr(res, rand_coll, rand_coll_true, username, fullName,
