@@ -86,7 +86,7 @@ function getCookie(req,res, username, accountId, user, type) {
         });
   }
   catch(err){
-    console.log(err)'
+    console.log(err);
   }
 }
 function setCookie(req,data, res, count_m, session, accountId, dir, user) {
