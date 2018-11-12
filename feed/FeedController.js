@@ -50,87 +50,99 @@ function chekoutInF(req, res, type){
     });
 }
 function getCookie(req,res, username, accountId, user, type) {
+    
+    try{
+        var dir = __dirname + "/cookies/"+username+".json";
+      dir = dir.replace('feed', 'auth');
+      var device = new Client.Device(username);
+      var storage = new Client.CookieFileStorage(dir);
+      var session = new Client.Session(device, storage)
 
-  var dir = __dirname + "/cookies/"+username+".json";
-  dir = dir.replace('feed', 'auth');
-  var device = new Client.Device(username);
-  var storage = new Client.CookieFileStorage(dir);
-  var session = new Client.Session(device, storage)
+      firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
+          value: true,
+        });
 
-  firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
-      value: true,
-    });
-
-  var count = 1;
-  if(req.body.count_media) count = req.body.count_media;
-    console.log(count);
-    console.log('set Cookie');
-      var response = JSON.stringify({
-        'type' : 'ok',
-        'code' : 201,
-      })
-    res.send(JSON.parse(response));
-    if(type === 1) setCookie(req,'d', res, count, session, accountId, dir, user);
+      var count = 1;
+      if(req.body.count_media) count = req.body.count_media;
+        console.log(count);
+        console.log('set Cookie');
+          var response = JSON.stringify({
+            'type' : 'ok',
+            'code' : 201,
+          })
+        res.send(JSON.parse(response));
+        if(type === 1) setCookie(req,'d', res, count, session, accountId, dir, user);
+        
+    }
+    catch(err){
+        console.log(err);
+    }
+  
 }
 function setCookie(req,data, res, count_m, session, accountId, dir, user) {
 
-  firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
-      value: true,
-    });
+  try{
+          firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
+          value: true,
+        });
 
-  var start = new Date();
-  var feed = new Client.Feed.UserMedia(session, accountId);//313212819
+      var start = new Date();
+      var feed = new Client.Feed.UserMedia(session, accountId);//313212819
 
-      var posts_arr = [];
-      console.log('count media = ' + count_m);
+          var posts_arr = [];
+          console.log('count media = ' + count_m);
 
-      Promise.mapSeries(_.range(count_m), function() {
-       return feed.get();
-      })
-      .then(function(results) {
-      var media = _.flatten(results);
-      console.log(media[3]['_params']);
-      for(var k in media){
-        var mediaType = media[k]['_params']['mediaType'];
-        var text = media[k]['_params']['caption'];
-        var pk = media[k]['_params']['takenAt']
-        var count_like = media[k]['_params']['likeCount']
-        var count_commentst = media[k]['_params']['commentCount']
-        var count_view = 0;
-        if(media[k]['_params']['viewCount'])  count_view = media[k]['_params']['viewCount'];
-        var post = new Post(mediaType, count_like,count_commentst,count_view ,pk, text);
+          Promise.mapSeries(_.range(count_m), function() {
+           return feed.get();
+          })
+          .then(function(results) {
+          var media = _.flatten(results);
+          console.log(media[3]['_params']);
+          for(var k in media){
+            var mediaType = media[k]['_params']['mediaType'];
+            var text = media[k]['_params']['caption'];
+            var pk = media[k]['_params']['takenAt']
+            var count_like = media[k]['_params']['likeCount']
+            var count_commentst = media[k]['_params']['commentCount']
+            var count_view = 0;
+            if(media[k]['_params']['viewCount'])  count_view = media[k]['_params']['viewCount'];
+            var post = new Post(mediaType, count_like,count_commentst,count_view ,pk, text);
 
-        if(mediaType == 1){
-            post.setimages(media[k]['_params']['imageVersions2']['candidates'][0]);
-        }else if(mediaType == 8) {
-            var carousel_media = media[k]['_params']['carouselMedia'];
+            if(mediaType == 1){
+                post.setimages(media[k]['_params']['imageVersions2']['candidates'][0]);
+            }else if(mediaType == 8) {
+                var carousel_media = media[k]['_params']['carouselMedia'];
 
-            if(carousel_media[0]['_params']['images']) post.setimages(carousel_media[0]['_params']['images'][0]);
-            else if(carousel_media[0]['_params']['imageVersions2']) post.setimages(carousel_media[0]['_params']['imageVersions2']['candidates'][0]);
+                if(carousel_media[0]['_params']['images']) post.setimages(carousel_media[0]['_params']['images'][0]);
+                else if(carousel_media[0]['_params']['imageVersions2']) post.setimages(carousel_media[0]['_params']['imageVersions2']['candidates'][0]);
 
-        }else if(mediaType == 2) {
-           post.setimages(media[k]['_params']['images'][0]);
-           // post.setvideos(media[k]['_params']['videos']);
-           // post.setduration(media[k]['_params']['video']['duration'])
-        }
-        posts_arr.push(post);
-      //  console.log('**************');
-      }
+            }else if(mediaType == 2) {
+               post.setimages(media[k]['_params']['images'][0]);
+               // post.setvideos(media[k]['_params']['videos']);
+               // post.setduration(media[k]['_params']['video']['duration'])
+            }
+            posts_arr.push(post);
+          //  console.log('**************');
+          }
 
-    firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
-      value: false,
-      });
-    firebase.database().ref('/users/' + accountId + "/feed/media/").set({
-      posts: posts_arr,
-      });
-    var end = new Date();
-    console.log('Цикл занял '+(end - start)+' ms');
-      // fs.writeFile(dir, data , function(err) {
-      //   if(err) {
-      //   }else {
-      //   }
-      // });
-    })
+        firebase.database().ref('/users/' + accountId + "/feed/progress/").set({
+          value: false,
+          });
+        firebase.database().ref('/users/' + accountId + "/feed/media/").set({
+          posts: posts_arr,
+          });
+        var end = new Date();
+        console.log('Цикл занял '+(end - start)+' ms');
+          // fs.writeFile(dir, data , function(err) {
+          //   if(err) {
+          //   }else {
+          //   }
+          // });
+        })
+  }
+  catch(err){
+    console.log(err);
+  }
 
 }
 
