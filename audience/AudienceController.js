@@ -53,162 +53,178 @@ function chekoutInF(req, res, type){
 }
 function getCookie(req,res, username, accountId, user, type, f_b) {
 
-    var userId = accountId;
-    firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+    try{
+        
+        var userId = accountId;
+        firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
 
-    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-    var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
-    let data = dt;
-    var dir = __dirname + "/cookies/"+username+".json";
-    dir = dir.replace('audience', 'auth');
-    // var fs = require('fs');
-    // var contents = fs.readFileSync(dir, 'utf8');
-    // var d = contents;
+        var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        var dt = (snapshot.val() && snapshot.val().cookie) || 'Anonymous';
+        let data = dt;
+        var dir = __dirname + "/cookies/"+username+".json";
+        dir = dir.replace('audience', 'auth');
+        // var fs = require('fs');
+        // var contents = fs.readFileSync(dir, 'utf8');
+        // var d = contents;
 
-    var device = new Client.Device(username);
-    var storage = new Client.CookieFileStorage(dir);
-    var session = new Client.Session(device, storage)
+        var device = new Client.Device(username);
+        var storage = new Client.CookieFileStorage(dir);
+        var session = new Client.Session(device, storage)
 
-    console.log('set Cookie');
-        var response = JSON.stringify({
-          'type' : 'ok',
-          'code' : 201,
-        })
-      res.send(JSON.parse(response));
-      if(type === 1) setCookie(req,'d', res, session, accountId, dir, user, f_b);
-    });
+        console.log('set Cookie');
+            var response = JSON.stringify({
+              'type' : 'ok',
+              'code' : 201,
+            })
+          res.send(JSON.parse(response));
+          if(type === 1) setCookie(req,'d', res, session, accountId, dir, user, f_b);
+        });
+    }
+    catch(err){
+        console.log(err);
+    }
 }
 
 async function setCookie(req,data_cookie, res, session, accountId, dir, user, f_b) {
-  session.getAccount()
-    .then(function(account) {
-    var count_followers = account.params['followerCount'];
-    var feed = new Client.Feed.AccountFollowers(session, accountId );
-    var cursor;
-    var moreAvailable;
-    var result = x(session, accountId , res, f_b);
-    //res.send(result);
-    // fs.writeFile(dir, data_cookie , function(err) {
-    //   if(err) {
-    //   }else {
-    //    //res.send(count_followers)
-    //   }
-    // });
+    try{
+         session.getAccount()
+        .then(function(account) {
+        var count_followers = account.params['followerCount'];
+        var feed = new Client.Feed.AccountFollowers(session, accountId );
+        var cursor;
+        var moreAvailable;
+        var result = x(session, accountId , res, f_b);
+        //res.send(result);
+        // fs.writeFile(dir, data_cookie , function(err) {
+        //   if(err) {
+        //   }else {
+        //    //res.send(count_followers)
+        //   }
+        // });
 
-    })
+        })
+    }
+    catch(err){
+        console.log(err);
+    }
 }
 async function x(session, accountId, res, f_b){
-  if(f_b) {
-    firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
-        value: true,
-      });
-  }
-  var feed = new Client.Feed.AccountFollowers(session, accountId);
-  const allResults = await feed.all();
-
-   console.log('f_b = ' + f_b);
-   if(!f_b) {
-     firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
-         value: true,
-       });
-
-     for(var k in allResults){
-     firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
-         id: allResults[k]['_params']['id'],
-         username : allResults[k]['_params']['username'],
-         full_name : allResults[k]['_params']['fullName'],
-         profile_picture : allResults[k]['_params']['profilePicUrl'],
-       });
-      }
-      var count = allResults.length;
-      console.log('count_f = '+count);
-      var response = JSON.stringify ({
-        "count_followers" : count,
-        "count_followers_on" :0,
-        "count_followers_off" :0
-      });
-      x(session, accountId, res, true)
-    }else{
-
-      var old_user_ids = [];
-      var old_user_ids_fb = [];
-
-      for(var k in allResults){
-        old_user_ids[old_user_ids.length] = allResults[k]['_params']['id'];
-      }
-      firebase.database().ref('/users/' + accountId + "/audience/followers_old/").once('value', (snap) => {
-          let data = snap.val();
-          let dataWithKeys = Object.keys(data).map((key) => {
-             var obj = data[key];
-             //old_user_ids_fb[old_user_ids_fb.length] = obj.id;
-             obj._key = key;
-             return obj;
+  try{
+      if(f_b) {
+        firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
+            value: true,
           });
+      }
+      var feed = new Client.Feed.AccountFollowers(session, accountId);
+      const allResults = await feed.all();
 
-          for (var k in dataWithKeys){
-            //console.log(dataWithKeys[k]['id']);
-            old_user_ids_fb[old_user_ids_fb.length] = dataWithKeys[k]['id'];
+       console.log('f_b = ' + f_b);
+       if(!f_b) {
+         firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
+             value: true,
+           });
+
+         for(var k in allResults){
+         firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
+             id: allResults[k]['_params']['id'],
+             username : allResults[k]['_params']['username'],
+             full_name : allResults[k]['_params']['fullName'],
+             profile_picture : allResults[k]['_params']['profilePicUrl'],
+           });
           }
+          var count = allResults.length;
+          console.log('count_f = '+count);
+          var response = JSON.stringify ({
+            "count_followers" : count,
+            "count_followers_on" :0,
+            "count_followers_off" :0
+          });
+          x(session, accountId, res, true)
+        }else{
 
+          var old_user_ids = [];
+          var old_user_ids_fb = [];
 
-
-          //console.log
-          // get follower on
-          var count_u_old = old_user_ids.length;
-          for( var k in old_user_ids){
-
-            if(old_user_ids_fb.indexOf(old_user_ids[k]) === -1) {
-              let date_now = new Date();
-              console.log('user dont in fb = ' + old_user_ids[k] + ' in date = '+ date_now);
-              firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
-                  id: allResults[k]['_params']['id'],
-                  username : allResults[k]['_params']['username'],
-                  full_name : allResults[k]['_params']['fullName'],
-                  profile_picture : allResults[k]['_params']['profilePicUrl']
-                });
-                firebase.database().ref('/users/' + accountId + "/audience/followers_off/" + old_user_ids[k] ).remove();
-              //sleep(200);
-              firebase.database().ref('/users/' + accountId + "/audience/followers_on/" +allResults[k]['_params']['id'] ).set({
-                  id: allResults[k]['_params']['id'],
-                  username : allResults[k]['_params']['username'],
-                  full_name : allResults[k]['_params']['fullName'],
-                  profile_picture : allResults[k]['_params']['profilePicUrl'],
-                  at : date.format(date_now, 'DD-MM-YYYY'),
-                });
-
-            }
+          for(var k in allResults){
+            old_user_ids[old_user_ids.length] = allResults[k]['_params']['id'];
           }
+          firebase.database().ref('/users/' + accountId + "/audience/followers_old/").once('value', (snap) => {
+              let data = snap.val();
+              let dataWithKeys = Object.keys(data).map((key) => {
+                 var obj = data[key];
+                 //old_user_ids_fb[old_user_ids_fb.length] = obj.id;
+                 obj._key = key;
+                 return obj;
+              });
 
-          for(var j in old_user_ids_fb){
-            if(old_user_ids.indexOf(old_user_ids_fb[j]) === -1){
-              var us = old_user_ids_fb[j];
-              console.log('unfollows user '+ us + ' from fb');
-              let date_now = new Date();
-              firebase.database().ref('/users/' + accountId + "/audience/followers_old/" + us ).once('value')
-              .then(function(snapshot) {
-                firebase.database().ref('/users/' + accountId + "/audience/followers_off/" + snapshot.val().id ).set({
-                    id: snapshot.val().id,
-                    username : snapshot.val().username,
-                    full_name : snapshot.val().full_name,
-                    profile_picture : snapshot.val().profile_picture,
-                    at : date.format(date_now, 'DD-MM-YYYY'),
-                  });
+              for (var k in dataWithKeys){
+                //console.log(dataWithKeys[k]['id']);
+                old_user_ids_fb[old_user_ids_fb.length] = dataWithKeys[k]['id'];
+              }
+
+
+
+              //console.log
+              // get follower on
+              var count_u_old = old_user_ids.length;
+              for( var k in old_user_ids){
+
+                if(old_user_ids_fb.indexOf(old_user_ids[k]) === -1) {
+                  let date_now = new Date();
+                  console.log('user dont in fb = ' + old_user_ids[k] + ' in date = '+ date_now);
+                  firebase.database().ref('/users/' + accountId + "/audience/followers_old/" +allResults[k]['_params']['id'] ).set({
+                      id: allResults[k]['_params']['id'],
+                      username : allResults[k]['_params']['username'],
+                      full_name : allResults[k]['_params']['fullName'],
+                      profile_picture : allResults[k]['_params']['profilePicUrl']
+                    });
+                    firebase.database().ref('/users/' + accountId + "/audience/followers_off/" + old_user_ids[k] ).remove();
                   //sleep(200);
-                  firebase.database().ref('/users/' + accountId + "/audience/followers_old/" + snapshot.val().id ).remove();
-                  firebase.database().ref('/users/' + accountId + "/audience/followers_on/" + snapshot.val().id ).remove();
-              })
-            }
+                  firebase.database().ref('/users/' + accountId + "/audience/followers_on/" +allResults[k]['_params']['id'] ).set({
+                      id: allResults[k]['_params']['id'],
+                      username : allResults[k]['_params']['username'],
+                      full_name : allResults[k]['_params']['fullName'],
+                      profile_picture : allResults[k]['_params']['profilePicUrl'],
+                      at : date.format(date_now, 'DD-MM-YYYY'),
+                    });
 
-          }
+                }
+              }
 
-          firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
-              value: false,
+              for(var j in old_user_ids_fb){
+                if(old_user_ids.indexOf(old_user_ids_fb[j]) === -1){
+                  var us = old_user_ids_fb[j];
+                  console.log('unfollows user '+ us + ' from fb');
+                  let date_now = new Date();
+                  firebase.database().ref('/users/' + accountId + "/audience/followers_old/" + us ).once('value')
+                  .then(function(snapshot) {
+                    firebase.database().ref('/users/' + accountId + "/audience/followers_off/" + snapshot.val().id ).set({
+                        id: snapshot.val().id,
+                        username : snapshot.val().username,
+                        full_name : snapshot.val().full_name,
+                        profile_picture : snapshot.val().profile_picture,
+                        at : date.format(date_now, 'DD-MM-YYYY'),
+                      });
+                      //sleep(200);
+                      firebase.database().ref('/users/' + accountId + "/audience/followers_old/" + snapshot.val().id ).remove();
+                      firebase.database().ref('/users/' + accountId + "/audience/followers_on/" + snapshot.val().id ).remove();
+                  })
+                }
+
+              }
+
+              firebase.database().ref('/users/' + accountId + "/audience/progress/").set({
+                  value: false,
+                });
             });
-        });
 
 
-    }
+        }
 
+  }
+  catch(err){
+    console.log(err);
+  }
 
   //res.send('allResults[0]');
 }
