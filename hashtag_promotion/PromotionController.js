@@ -67,7 +67,7 @@ function addCategoty(req, res){
     }
 
 
-    var key = firebase.database().ref('/promotion/category/').push();
+    var key = firebase.database().ref('/promotion/categoty/').push();
     var d = new Date();
     key.set({
         name : req.body.name_category,
